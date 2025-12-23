@@ -1,0 +1,7 @@
+export type CheckboxProps = {
+    checked: boolean;
+    onChange: (checked: boolean) => void;
+    label?: string;
+    disabled?: boolean;
+    children?: React.ReactNode;
+}
