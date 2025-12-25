@@ -1,0 +1,95 @@
+.header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    box-shadow: 0px 4px 4px 0px #0000001A;
+    height: 80px;
+    width: 100%;
+}
+
+.left{
+    margin-left: 40px;
+}
+
+.right, .left{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.logo, .dateNav{
+    display: flex;
+    align-items: center;    
+}
+
+.logoText{
+    font-family: 'Inter', sans-serif;
+    font-size: 24px;
+}
+
+.btnToday{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Roboto', sans-serif;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background-color: #00AE1C;
+    box-shadow: 0px 1px 2px 0px #1018280D;
+    color: white;
+    height: 36px;
+    width: 60px;
+    appearance: none;   
+    margin-left: 16px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.btnPrev{
+    margin-left: 16px;
+    margin-right: 8px;
+}
+
+.btnNext{
+    margin-right: 16px;
+}
+
+.btnPrev, .btnNext{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    border: 1px solid #DEDFE5;
+    border-radius: 8px;
+    background-color: transparent;
+    appearance: none;   
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+}
+
+.date{
+    font-family: 'Inter', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.right{
+    margin-right: 40px;
+}
+
+.username{
+    font-family: 'Inter', sans-serif;
+    font-size: 17px;
+    margin-right: 10px;
+}
+
+.avatar{
+    font-family: 'Inter', sans-serif;
+    color: white;
+    background-color: #80D78D;
+    padding: 5px 10px;
+    border-radius: 50%;
+    font-size: 24px;
+    font-weight: 700;
+}
