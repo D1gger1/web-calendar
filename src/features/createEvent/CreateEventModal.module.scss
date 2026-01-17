@@ -1,0 +1,284 @@
+* {
+    font-size: 'Inter';
+    box-sizing: border-box;
+}
+
+.modal {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 0;
+    border-bottom: 1px solid #E0E0E0;
+    padding-bottom: 10px;
+    width: 98%;
+    position: relative;
+    bottom: 15px;
+}
+
+.containerTitle {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    padding-left: 35px;
+    position: relative;
+}
+
+.titleInput {
+    height: 30px;
+    width: 450px;
+    border: none;
+    border-bottom: 1px solid #737373;
+    outline: none;
+    margin-top: 3px;
+}
+
+.labelTitle {
+    position: relative;
+    top: 5px;
+    font-size: 10px;
+    font-weight: 700;
+
+}
+
+.titleImage {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    left: 5px;
+    top: 21px;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    
+}
+
+.containerDate {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-top: 7px;
+    margin-left: 15px;
+}
+
+.labelDate {
+    position: relative;
+    bottom: 20px;
+    left: 23px;
+    font-size: 10px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.dateInput {
+    height: 30px;
+    width: 230px;
+    border: none;
+    border-bottom: 1px solid #737373;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.dateImage {
+    position: absolute;
+    width: 15px;
+    height: 14px;
+    left: 20px;
+    top: 165px;
+
+}
+
+.calendarPopover {
+    position: absolute;
+    top: 190px;
+    left: 45px;
+    z-index: 100;
+}
+
+.containerTime {
+    display: flex;
+    flex-direction: column;
+    padding-right: 15px;
+    position: relative;
+}
+
+.labelTime {
+    position: relative;
+    bottom: 10px;
+    font-size: 10px;
+    font-weight: 700;
+    margin-top: 10px;
+
+}
+
+.timeRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.timeRow>* {
+    flex: 1;
+}
+
+.timeSeparator {
+    font-size: 14px;
+    color: #6b7280;
+    margin-top: 2px;
+}
+
+.rowDay {
+    display: flex;
+    flex-direction: row;
+    padding: 10px 30px;
+    gap: 10px;
+
+}
+
+.labelCheckbox {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.repeat {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    font-size: 15px;
+    color: #323749;
+    cursor: pointer;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #737373;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    max-width: 220px;
+    padding-top: 5px;
+    margin-left: 10px;
+}
+
+.repeatMenu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0px;
+    min-width: 170px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    z-index: 40;
+
+}
+
+.repeatOption {
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #111827;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.repeatOption:hover {
+    background-color: #f3f4f6;
+}
+
+.active {
+    background-color: #e5e7eb;
+}
+
+.containerCalendar {
+    display: flex;
+    margin-top: 20px;
+
+}
+
+.labelCalendar {
+    font-size: 10px;
+    font-weight: 700;
+    position: relative;
+    bottom: 15px;
+    left: 39px;
+}
+
+.imgCalendar {
+    position: absolute;
+    left: 20px;
+    height: 14px;
+    width: 14px;
+
+}
+
+.containerDescript {
+    display: flex;
+    flex-direction: column;
+    margin-left: 40px;
+    position: relative;
+    margin-top: 30px;
+}
+
+.labelDescript {
+    font-size: 10px;
+    font-weight: 700;
+    position: relative;
+    bottom: 5px;
+}
+
+.txtDescript {
+    border: none;
+    border-bottom: 1px solid #737373;
+    outline: none;
+    max-width: 440px;
+    height: 25px;
+    max-height: 25px;
+    
+}
+
+.imgDescript {
+    height: 12px;
+    width: 12px;
+    position: absolute;
+    left: -35px;
+    margin-top: 12px;
+}
+
+.footer {
+    display: flex;
+    justify-content: end;
+    align-items: flex-end;
+    margin-top: 25px;
+    margin-right: 10px;
+    position: relative;
+}
+
+.btnSave {
+    width: 80px;
+    height: 36px;
+    background-color: #00AE1C;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+
+}
+
+.btnSave:hover {
+    background-color: #00AE1C;
+    border: 1px solid #5CE171;
+}
+
+.btnSave:active {
+    border: 1px solid #5CE171;
+    background-color: #0CD52B;
+
+}

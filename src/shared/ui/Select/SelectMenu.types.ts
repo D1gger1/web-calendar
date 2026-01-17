@@ -1,5 +1,5 @@
-export type SelectProps = {
-    options: string[];
+export type SelectMenuProps = {
+    label?: string;
     value: string;
     onChange: (value: string) => void; 
 }

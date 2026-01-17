@@ -1,0 +1,44 @@
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+
+
+}
+
+.modalContent {
+  position: relative;
+  background: #FFFFFF;
+  border-radius: 8px;
+  width: 520px;
+  height: 450px;
+  padding: 16px 8px 32px 16px;
+  box-shadow: 0px 16px 50px 0px #0000003D;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+
+.title {
+  font-family: 'Inter';
+  width: 98%;
+  border-bottom: 1px solid grey;
+  padding-bottom: 10px;
+}
+
+.closeButton {
+  position: absolute;
+  right: 10px;
+  top: 25px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
