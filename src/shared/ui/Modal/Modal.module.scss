@@ -25,6 +25,7 @@
   align-items: center;
   justify-content: space-between;
   position: relative;
+  height: 60px;
 }
 
 .title {
@@ -37,7 +38,7 @@
 .closeButton {
   position: absolute;
   right: 10px;
-  top: 25px;
+  top: 10px;
   border: none;
   background-color: transparent;
   cursor: pointer;
