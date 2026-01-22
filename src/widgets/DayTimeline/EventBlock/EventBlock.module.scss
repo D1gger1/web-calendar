@@ -1,0 +1,42 @@
+.event {
+  position: absolute;
+  left: 0;
+  right: 0;
+  --event-color: #3b82f6;
+  background-color: color-mix(
+    in srgb,
+    var(--event-color) 18%,
+    transparent
+  );
+
+  border-radius: 6px;
+  padding: 6px 8px 6px 10px;
+
+  color: #111827;
+  font-size: 12px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.event::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 4px;
+  height: 100%;
+
+  background-color: var(--event-color);
+  border-radius: 6px 0 0 6px;
+}
+
+.title {
+  font-weight: 600;
+}
+
+.time {
+  margin-top: 2px;
+  font-size: 11px;
+  opacity: 0.8;
+}

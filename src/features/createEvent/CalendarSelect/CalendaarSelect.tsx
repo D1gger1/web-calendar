@@ -2,8 +2,6 @@ import { useState } from 'react';
 import styles from './CalendarSelect.module.scss';
 import type { CalendarSelectProps } from './CalendarSelect.types';
 
-
-
 export const CalendarSelect = ({
   value,
   options,

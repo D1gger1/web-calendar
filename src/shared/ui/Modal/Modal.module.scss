@@ -6,7 +6,6 @@
   justify-content: center;
   z-index: 1000;
 
-
 }
 
 .modalContent {
@@ -19,26 +18,10 @@
   box-shadow: 0px 16px 50px 0px #0000003D;
 }
 
-.header {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  position: relative;
-  height: 60px;
-}
-
-.title {
-  font-family: 'Inter';
-  width: 98%;
-  border-bottom: 1px solid grey;
-  padding-bottom: 10px;
-}
-
 .closeButton {
   position: absolute;
   right: 10px;
-  top: 10px;
+  top: 25px;
   border: none;
   background-color: transparent;
   cursor: pointer;

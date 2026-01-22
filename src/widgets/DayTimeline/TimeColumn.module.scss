@@ -4,3 +4,10 @@
     width: 64px;
     flex-shrink: 0;
 }
+
+.hour {
+  height: 60px;
+  display: flex;
+  align-items: flex-start;
+  color: #6b7280;
+}

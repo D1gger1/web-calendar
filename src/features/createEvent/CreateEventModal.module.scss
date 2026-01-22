@@ -20,6 +20,20 @@
     bottom: 15px;
 }
 
+.error {
+    position: absolute;
+    bottom: -18px;
+    font-size: 12px;
+    color: rgb(202, 28, 28);
+}
+
+.timeError {
+    position: absolute;
+    bottom: -10px;
+    font-size: 12px;
+    color: rgb(202, 28, 28);
+}
+
 .containerTitle {
     display: flex;
     flex-direction: column;
@@ -57,7 +71,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    
+
 }
 
 .containerDate {
@@ -241,7 +255,6 @@
     max-width: 440px;
     height: 25px;
     max-height: 25px;
-    
 }
 
 .imgDescript {

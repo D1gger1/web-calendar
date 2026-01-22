@@ -1,5 +1,9 @@
 export const HOURS = Array.from({ length: 24 }, (_, i) => i); // generates an array [0, 1, 2, ..., 23]
 
-export const HOUR_HEIGHT = 80; // height in pixels for each hour block
+export const HOUR_HEIGHT = 60; // height in pixels for each hour block
 
-export const HALF_HOUR_HEIGHT = HOUR_HEIGHT / 2; // height in pixels for half-hour block
+export const START_HOUR = 6;
+
+export const HOURS_IN_VIEW = 18;
+
+export const PIXELS_PER_MINUTE = 1;

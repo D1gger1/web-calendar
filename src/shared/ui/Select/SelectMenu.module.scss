@@ -42,6 +42,11 @@
     
 }
 
+.disabled{
+    opacity: 0.5;
+    pointer-events: none;
+}
+
 .menu::-webkit-scrollbar {
     width: 6px;
 
