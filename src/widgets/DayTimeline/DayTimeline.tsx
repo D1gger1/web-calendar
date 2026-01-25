@@ -14,7 +14,11 @@ export const DayTimeline = () => {
 
   const dayEvents = getDayEvents ? getDayEvents(events) : [];
 
-  const positionedEvents = calculateEventLayout(dayEvents);
+  const layoutEvents = calculateEventLayout(dayEvents);
+
+  const columnCount = layoutEvents.length > 0 
+    ? Math.max(...layoutEvents.map(e => e.columnIndex)) + 1 
+    : 1;
 
   return (
     <div className={styles.wrapper}>
@@ -28,10 +32,10 @@ export const DayTimeline = () => {
         <div className={styles.timeline}>
           <TimelineGrid />
 
-          {positionedEvents.map(event => (
+          {layoutEvents.map((event) => (
             <EventBlock
               key={event.id}
-              event={event}
+              event={{ ...event, columnCount }}
               calendarColor={getCalendarColor(event.calendarId)}
             />
           ))}

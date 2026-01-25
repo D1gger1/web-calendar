@@ -1,4 +1,6 @@
 export const timeToMinutes = (time: string) => {
+  if(!time) return 0;
+
   const [rawTime, period] = time.split(' ');
   let [hours, minutes] = rawTime.split(':').map(Number);
 
