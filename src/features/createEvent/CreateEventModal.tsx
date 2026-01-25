@@ -46,8 +46,8 @@ export const CreateEventModal = () => {
   const [description, setDescription] = useState('');
 
   const [timeError, setTimeError] = useState<string | null>(null);
-
   const [titleError, setTitleError] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const dateRef = useRef<HTMLDivElement | null>(null);
   const repeatRef = useRef<HTMLDivElement | null>(null);
@@ -86,14 +86,12 @@ export const CreateEventModal = () => {
     }
     setTitleError(null);
 
-    if (!allDay) {
-      if (!startTime || !endTime) {
-        setTimeError('Choice time is required!')
-        return;
-      }
+    if (!allDay && (!startTime || !endTime)) {
+      setTimeError('Choose time is required');
+      return;
     }
 
-    if (!allDay && startTime && endTime) {
+    if (!allDay) {
       const start = timeToMinutes(startTime);
       const end = timeToMinutes(endTime);
 
@@ -105,7 +103,7 @@ export const CreateEventModal = () => {
 
     setTimeError(null);
 
-    createEvent({
+    const result = createEvent({
       title,
       date,
       startTime,
@@ -116,6 +114,13 @@ export const CreateEventModal = () => {
       description,
     });
 
+    if (!result.ok) {
+      setSaveError(result.error);
+      return;
+    }
+
+    // success
+    setSaveError(null);
     setTitle('');
     setStartTime('');
     setEndTime('');
@@ -124,6 +129,18 @@ export const CreateEventModal = () => {
     setDescription('');
   };
 
+  // auto hide save error after 3s
+  useEffect(() => {
+    if (!saveError) return;
+
+    const timer = setTimeout(() => {
+      setSaveError(null);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [saveError]);
+
+  // outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node;
@@ -138,10 +155,7 @@ export const CreateEventModal = () => {
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isCalendarOpen, isRepeatOpen]);
 
   useEffect(() => {
@@ -149,7 +163,15 @@ export const CreateEventModal = () => {
   }, []);
 
   return (
-    <div className={styles.modal}>
+    <div
+      className={styles.modal}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          handleSave();
+        }
+      }}
+    >
       <h2 className={styles.title}>Create event</h2>
 
       <div className={styles.containerTitle}>
@@ -163,17 +185,9 @@ export const CreateEventModal = () => {
             setTitle(e.target.value);
             if (titleError) setTitleError(null);
           }}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' && e.target instanceof HTMLInputElement) {
-              e.preventDefault();
-              handleSave();
-            }
-          }}
           placeholder="Enter title"
         />
-        {titleError && (
-          <div className={styles.error}>{titleError}</div>
-        )}
+        {titleError && <div className={styles.error}>{titleError}</div>}
       </div>
 
       <div className={styles.row}>
@@ -209,13 +223,11 @@ export const CreateEventModal = () => {
 
           <div className={styles.timeRow}>
             <SelectMenu value={startTime} onChange={handleStartTimeChange} disabled={allDay} />
-            <span className={styles.timeSeparator}>-</span>
+            <span className={styles.timeSeparator}>–</span>
             <SelectMenu value={endTime} onChange={handleEndTimeChange} disabled={allDay} />
           </div>
 
-          {timeError && (
-            <div className={styles.timeError}>{timeError}</div>
-          )}
+          {timeError && <div className={styles.timeError}>{timeError}</div>}
         </div>
       </div>
 
@@ -250,8 +262,9 @@ export const CreateEventModal = () => {
               {repeatOptions.map((option) => (
                 <div
                   key={option.value}
-                  className={`${styles.repeatOption} ${option.value === repeat ? styles.active : ''
-                    }`}
+                  className={`${styles.repeatOption} ${
+                    option.value === repeat ? styles.active : ''
+                  }`}
                   onClick={(e) => {
                     e.stopPropagation();
                     setRepeat(option.value);
@@ -288,6 +301,7 @@ export const CreateEventModal = () => {
       </div>
 
       <div className={styles.footer}>
+        {saveError && <div className={styles.saveError}>{saveError}</div>}
         <button className={styles.btnSave} onClick={handleSave}>
           Save
         </button>
