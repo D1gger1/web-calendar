@@ -27,23 +27,34 @@ const calendars = [
   { id: '4', title: 'Calendar 4', color: '#0D9488' },
 ];
 
-export const CreateEventModal = () => {
-  const createEvent = useEventStore((s) => s.createEvent);
+interface CreateEventModalProps {
+  isEditMode?: boolean;
+  onClose: () => void;
+}
 
-  const [title, setTitle] = useState('');
-  const [date, setDate] = useState(new Date());
+export const CreateEventModal = ({ isEditMode = false, onClose }: CreateEventModalProps) => {
+
+  const createEvent = useEventStore((s) => s.createEvent);
+  const updateEvent = useEventStore((s) => s.updateEvent);
+  const selectedEvent = useEventStore((s) => s.selectedEvent);
+
+  const [title, setTitle] = useState(isEditMode ? selectedEvent?.title || '' : '');
+  const [date, setDate] = useState(isEditMode ? selectedEvent?.date || new Date() : new Date());
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
+  const [startTime, setStartTime] = useState(isEditMode ? selectedEvent?.startTime || '' : '');
+  const [endTime, setEndTime] = useState(isEditMode ? selectedEvent?.endTime || '' : '');
 
-  const [allDay, setAllDay] = useState(false);
-  const [repeat, setRepeat] =
-    useState<'none' | 'daily' | 'weekly' | 'monthly' | 'annually'>('none');
+  const [allDay, setAllDay] = useState(isEditMode ? selectedEvent?.allDay || false : false);
+  const [repeat, setRepeat] = useState<any>(isEditMode ? selectedEvent?.repeat || 'none' : 'none');
   const [isRepeatOpen, setIsRepeatOpen] = useState(false);
 
-  const [calendar, setCalendar] = useState(calendars[0]);
-  const [description, setDescription] = useState('');
+  const initialCalendar = isEditMode 
+    ? calendars.find(c => c.id === selectedEvent?.calendarId) || calendars[0]
+    : calendars[0];
+  const [calendar, setCalendar] = useState(initialCalendar);
+  
+  const [description, setDescription] = useState(isEditMode ? selectedEvent?.description || '' : '');
 
   const [timeError, setTimeError] = useState<string | null>(null);
   const [titleError, setTitleError] = useState<string | null>(null);
@@ -57,17 +68,14 @@ export const CreateEventModal = () => {
     const total = timeToMinutes(time) + minutes;
     const h = Math.floor(total / 60) % 24;
     const m = total % 60;
-
     const h12 = h % 12 === 0 ? 12 : h % 12;
     const suffix = h < 12 ? 'AM' : 'PM';
-
     return `${h12}:${m.toString().padStart(2, '0')} ${suffix}`;
   };
 
   const handleStartTimeChange = (v: string) => {
     setStartTime(v);
     setTimeError(null);
-
     if (!endTime || timeToMinutes(endTime) <= timeToMinutes(v)) {
       setEndTime(addMinutes(v, 30));
     }
@@ -79,31 +87,22 @@ export const CreateEventModal = () => {
   };
 
   const handleSave = () => {
+
     if (!title.trim()) {
       setTitleError('Title is required');
       titleInputRef.current?.focus();
       return;
     }
-    setTitleError(null);
-
     if (!allDay && (!startTime || !endTime)) {
       setTimeError('Choose time is required');
       return;
     }
-
-    if (!allDay) {
-      const start = timeToMinutes(startTime);
-      const end = timeToMinutes(endTime);
-
-      if (end <= start) {
-        setTimeError('End time must be later than start time');
-        return;
-      }
+    if (!allDay && timeToMinutes(endTime) <= timeToMinutes(startTime)) {
+      setTimeError('End time must be later than start time');
+      return;
     }
 
-    setTimeError(null);
-
-    const result = createEvent({
+    const eventData = {
       title,
       date,
       startTime,
@@ -112,48 +111,33 @@ export const CreateEventModal = () => {
       repeat,
       calendarId: calendar.id,
       description,
-    });
+    };
+
+    const result = isEditMode && selectedEvent
+      ? updateEvent(selectedEvent.id, eventData)
+      : createEvent(eventData);
 
     if (!result.ok) {
       setSaveError(result.error);
       return;
     }
 
-    // success
     setSaveError(null);
-    setTitle('');
-    setStartTime('');
-    setEndTime('');
-    setAllDay(false);
-    setRepeat('none');
-    setDescription('');
+    onClose(); 
   };
 
-  // auto hide save error after 3s
   useEffect(() => {
     if (!saveError) return;
-
-    const timer = setTimeout(() => {
-      setSaveError(null);
-    }, 3000);
-
+    const timer = setTimeout(() => setSaveError(null), 3000);
     return () => clearTimeout(timer);
   }, [saveError]);
 
-  // outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node;
-
-      if (isCalendarOpen && dateRef.current && !dateRef.current.contains(target)) {
-        setIsCalendarOpen(false);
-      }
-
-      if (isRepeatOpen && repeatRef.current && !repeatRef.current.contains(target)) {
-        setIsRepeatOpen(false);
-      }
+      if (isCalendarOpen && dateRef.current && !dateRef.current.contains(target)) setIsCalendarOpen(false);
+      if (isRepeatOpen && repeatRef.current && !repeatRef.current.contains(target)) setIsRepeatOpen(false);
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isCalendarOpen, isRepeatOpen]);
@@ -161,6 +145,21 @@ export const CreateEventModal = () => {
   useEffect(() => {
     titleInputRef.current?.focus();
   }, []);
+
+useEffect(() => {
+  if (isEditMode && selectedEvent) {
+    setTitle(selectedEvent.title);
+    setDate(selectedEvent.date);
+    setStartTime(selectedEvent.startTime);
+    setEndTime(selectedEvent.endTime);
+    setAllDay(selectedEvent.allDay);
+    setRepeat(selectedEvent.repeat);
+    setDescription(selectedEvent.description || '');
+    
+    const currentCal = calendars.find(c => c.id === selectedEvent.calendarId);
+    if (currentCal) setCalendar(currentCal);
+  }
+}, [isEditMode, selectedEvent]);
 
   return (
     <div
@@ -172,7 +171,8 @@ export const CreateEventModal = () => {
         }
       }}
     >
-      <h2 className={styles.title}>Create event</h2>
+
+      <h2 className={styles.title}>{isEditMode ? 'Edit event' : 'Create event'}</h2>
 
       <div className={styles.containerTitle}>
         <label className={styles.labelTitle}>Title</label>
@@ -220,13 +220,11 @@ export const CreateEventModal = () => {
 
         <div className={styles.containerTime}>
           <label className={styles.labelTime}>Time</label>
-
           <div className={styles.timeRow}>
             <SelectMenu value={startTime} onChange={handleStartTimeChange} disabled={allDay} />
             <span className={styles.timeSeparator}>–</span>
             <SelectMenu value={endTime} onChange={handleEndTimeChange} disabled={allDay} />
           </div>
-
           {timeError && <div className={styles.timeError}>{timeError}</div>}
         </div>
       </div>
@@ -239,7 +237,6 @@ export const CreateEventModal = () => {
             onChange={(e) => {
               const checked = e.target.checked;
               setAllDay(checked);
-
               if (checked) {
                 setStartTime('');
                 setEndTime('');
@@ -267,7 +264,7 @@ export const CreateEventModal = () => {
                   }`}
                   onClick={(e) => {
                     e.stopPropagation();
-                    setRepeat(option.value);
+                    setRepeat(option.value as any);
                     setIsRepeatOpen(false);
                   }}
                 >
@@ -303,7 +300,7 @@ export const CreateEventModal = () => {
       <div className={styles.footer}>
         {saveError && <div className={styles.saveError}>{saveError}</div>}
         <button className={styles.btnSave} onClick={handleSave}>
-          Save
+          {isEditMode ? 'Save' : 'Create'} 
         </button>
       </div>
     </div>

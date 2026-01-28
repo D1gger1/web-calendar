@@ -1,6 +1,7 @@
 import { Header } from '../widgets/Header/Header';
 import { DayPage } from '../pages/dayPage/DayPage';
 import { CalendarSidebar } from '../widgets/CalendarSidebar/CalendarSidebar';
+import { Toast } from '../shared/ui/Toast/Toast';
 import styles from './App.module.scss';
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
       <div className={styles.main}>
         <CalendarSidebar />
         <DayPage />
+        <Toast/>
       </div>
     </div>
   );

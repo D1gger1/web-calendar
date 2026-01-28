@@ -2,16 +2,13 @@ import { create } from 'zustand';
 import type { CalendarEvent } from './types';
 import { timeToMinutes } from '../../../shared/lib/time';
 
-
 const STORAGE_KEY = 'calendar-events';
 
 const loadEvents = (): CalendarEvent[] => {
   const raw = localStorage.getItem(STORAGE_KEY);
   if (!raw) return [];
-
   try {
     const parsed: CalendarEvent[] = JSON.parse(raw);
-
     return parsed.map((event) => ({
       ...event,
       date: new Date(event.date),
@@ -39,7 +36,6 @@ const isTimeOverlap = (
   const aE = timeToMinutes(aEnd);
   const bS = timeToMinutes(bStart);
   const bE = timeToMinutes(bEnd);
-
   return aS < bE && aE > bS;
 };
 
@@ -49,7 +45,15 @@ type CreateEventResult =
 
 type EventState = {
   events: CalendarEvent[];
+  selectedEvent: CalendarEvent | null;
+  setSelectedEvent: (event: CalendarEvent | null) => void;
+  clearSelectedEvent: () => void;
   createEvent: (
+    event: Omit<CalendarEvent, 'id' | 'createdAt'>
+  ) => CreateEventResult;
+
+  updateEvent: (
+    id: string, 
     event: Omit<CalendarEvent, 'id' | 'createdAt'>
   ) => CreateEventResult;
   deleteEvent: (id: string) => void;
@@ -57,6 +61,10 @@ type EventState = {
 
 export const useEventStore = create<EventState>((set, get) => ({
   events: loadEvents(),
+  selectedEvent: null,
+
+  setSelectedEvent: (event) => set({ selectedEvent: event }),
+  clearSelectedEvent: () => set({ selectedEvent: null }),
 
   createEvent: (event) => {
     const events = get().events;
@@ -66,70 +74,17 @@ export const useEventStore = create<EventState>((set, get) => ({
       isSameDay(e.date, event.date) &&
       e.startTime === event.startTime &&
       e.endTime === event.endTime &&
-      e.allDay === event.allDay &&
       e.calendarId === event.calendarId
     );
 
-    const hasAllDay = events.some(
-      (e) =>
-        e.allDay &&
-        e.calendarId === event.calendarId &&
-        isSameDay(e.date, event.date)
-    );
-
-    const hasTimed = events.some(
-      (e) =>
-        !e.allDay &&
-        e.calendarId === event.calendarId &&
-        isSameDay(e.date, event.date)
-    );
-
-
-    if (event.allDay && hasTimed) {
-      return {
-        ok: false,
-        error: 'Cannot create all-day event when timed events exist',
-      };
-    }
-
-    if (!event.allDay && hasAllDay) {
-      return {
-        ok: false,
-        error: 'Cannot create timed event when all-day event exists',
-      };
-    }
-
-    if (isDuplicate) {
-      return {
-        ok: false,
-        error: 'This event already exists',
-      };
-    }
+    if (isDuplicate) return { ok: false, error: 'This event already exists' };
 
     if (!event.allDay) {
       const hasOverlap = events.some((e) => {
-        if (
-          e.allDay ||
-          e.calendarId !== event.calendarId ||
-          !isSameDay(e.date, event.date)
-        ) {
-          return false;
-        }
-
-        return isTimeOverlap(
-          e.startTime,
-          e.endTime,
-          event.startTime,
-          event.endTime
-        );
+        if (e.allDay || e.calendarId !== event.calendarId || !isSameDay(e.date, event.date)) return false;
+        return isTimeOverlap(e.startTime, e.endTime, event.startTime, event.endTime);
       });
-
-      if (hasOverlap) {
-        return {
-          ok: false,
-          error: 'This time is already occupied',
-        };
-      }
+      if (hasOverlap) return { ok: false, error: 'This time is already occupied' };
     }
 
     const newEvent: CalendarEvent = {
@@ -140,9 +95,36 @@ export const useEventStore = create<EventState>((set, get) => ({
 
     const updatedEvents = [...events, newEvent];
     saveEvents(updatedEvents);
-
     set({ events: updatedEvents });
+    return { ok: true };
+  },
 
+  updateEvent: (id, event) => {
+    const events = get().events;
+
+    if (!event.allDay) {
+      const hasOverlap = events.some((e) => {
+        if (
+          e.id === id || 
+          e.allDay || 
+          e.calendarId !== event.calendarId || 
+          !isSameDay(e.date, event.date)
+        ) return false;
+
+        return isTimeOverlap(e.startTime, e.endTime, event.startTime, event.endTime);
+      });
+
+      if (hasOverlap) return { ok: false, error: 'This time is already occupied' };
+    }
+
+    const updatedEvents = events.map((e) => 
+      e.id === id 
+        ? { ...e, ...event } 
+        : e
+    );
+
+    saveEvents(updatedEvents);
+    set({ events: updatedEvents, selectedEvent: null });
     return { ok: true };
   },
 
@@ -150,6 +132,9 @@ export const useEventStore = create<EventState>((set, get) => ({
     set((state) => {
       const updatedEvents = state.events.filter((e) => e.id !== id);
       saveEvents(updatedEvents);
-      return { events: updatedEvents };
+      return {
+        events: updatedEvents,
+        selectedEvent: null,
+      };
     }),
 }));

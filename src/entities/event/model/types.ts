@@ -14,6 +14,7 @@ export type RepeatType =
         allDay: boolean;
         repeat: RepeatType;
         calendarId: string;
+        calendarName?: string;
         description: string;
         createdAt: Date;
     }
