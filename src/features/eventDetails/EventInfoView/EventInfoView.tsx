@@ -1,5 +1,6 @@
 import styles from './EventInfoView.module.scss';
 import { useEventStore } from '../../../entities/event/model/eventStore';
+import { useCalendarStore } from '../../../entities/calendar/model/calendarStore';
 
 interface Props {
     onEdit: () => void;
@@ -9,8 +10,13 @@ interface Props {
 
 export const EventInfoView = ({ onEdit, onDelete, onClose }: Props) => {
     const event = useEventStore((s) => s.selectedEvent);
+    const calendars = useCalendarStore((s) => s.calendars);
 
     if (!event) return null;
+
+    const currentCalendar = calendars.find(c => String(c.id) === String(event.calendarId));
+    const calendarColor = currentCalendar?.color || '#CBD5E1';
+    const calendarName = currentCalendar?.title || `Calendar ${event.calendarId}`;
 
     return (
         <div className={styles.container}>
@@ -18,13 +24,15 @@ export const EventInfoView = ({ onEdit, onDelete, onClose }: Props) => {
                 <h3>Event information</h3>
                 <div className={styles.actions}>
                     <button onClick={onEdit} className={styles.iconBtn} title="Edit">
-
+                        <span className={styles.btnIcon}>✎</span>
                     </button>
+                    
                     <button onClick={onDelete} className={styles.iconBtn} title="Delete">
-                        🗑️
+                        <span className={styles.btnIcon}>🗑️</span>
                     </button>
-                    <button onClick={onClose} className={styles.iconBtn}>
-                        ✕
+                    
+                    <button onClick={onClose} className={styles.iconBtn} title="Close">
+                        <span className={styles.btnIcon}>✕</span>
                     </button>
                 </div>
             </header>
@@ -42,9 +50,6 @@ export const EventInfoView = ({ onEdit, onDelete, onClose }: Props) => {
                                 day: 'numeric'
                             })}, {event.startTime} - {event.endTime}
                         </p>
-                        <p className={styles.subtext}>
-                            {event.allDay ? 'All day' : ''} {event.repeat ? `, ${event.repeat}` : ''}
-                        </p>
                     </div>
                 </div>
 
@@ -53,9 +58,9 @@ export const EventInfoView = ({ onEdit, onDelete, onClose }: Props) => {
                     <div className={styles.calendarTag}>
                         <span
                             className={styles.colorCircle}
-                            style={{ backgroundColor: getCalendarColor(event.calendarId) }}
+                            style={{ backgroundColor: calendarColor }}
                         />
-                        {event.calendarName || `Calendar ${event.calendarId}`}
+                        {calendarName}
                     </div>
                 </div>
 
@@ -68,14 +73,4 @@ export const EventInfoView = ({ onEdit, onDelete, onClose }: Props) => {
             </div>
         </div>
     );
-};
-
-const getCalendarColor = (id: string) => {
-  const map: Record<string, string> = {
-    '1': '#FACC15',
-    '2': '#9333EA',
-    '3': '#BE123C',
-    '4': '#0D9488',
-  };
-  return map[id] ?? '#CBD5E1';
 };

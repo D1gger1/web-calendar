@@ -2,13 +2,13 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;   // Растягиваем на всю ширину
-  height: 100vh;  // Растягиваем на всю высоту
+  width: 100vw;
+  height: 100vh;
   background: rgba(0, 0, 0, 0.4);
   
   display: flex;
-  align-items: center;    // Центр по вертикали
-  justify-content: center; // Центр по горизонтали
+  align-items: center;
+  justify-content: center; 
   z-index: 1000;
 }
 
@@ -16,10 +16,9 @@
   background: #fff;
   border-radius: 12px;
   width: 100%;
-  max-width: 448px; // Ограничиваем ширину, чтобы все модалки были одинаковыми
+  max-width: 448px; 
   position: relative;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  // Удали отсюда любые margin-top или absolute позиционирование
 }
 
 .close {
