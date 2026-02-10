@@ -1,12 +1,11 @@
 import styles from './CreateEventModal.module.scss';
 import { useState, useEffect, useRef } from 'react';
-
 import { DatePicker } from '../../shared/ui/DatePicker/DatePicker';
 import { SelectMenu } from '../../shared/ui/Select/SelectMenu';
 import { CalendarSelect } from './CalendarSelect/CalendaarSelect';
 import { useEventStore } from '../../entities/event/model/eventStore';
+import { useCalendarStore } from '../../entities/calendar/model/calendarStore';
 import { timeToMinutes } from '../../shared/lib/time';
-
 import imgTitle from '../../assets/title.png';
 import imgDate from '../../assets/Date.png';
 import imgCalendar from '../../assets/calendar.png';
@@ -20,20 +19,13 @@ const repeatOptions = [
   { value: 'annually', label: 'Annually on November 2' },
 ] as const;
 
-const calendars = [
-  { id: '1', title: 'Calendar 1', color: '#FACC15' },
-  { id: '2', title: 'Calendar 2', color: '#9333EA' },
-  { id: '3', title: 'Calendar 3', color: '#BE123C' },
-  { id: '4', title: 'Calendar 4', color: '#0D9488' },
-];
-
 interface CreateEventModalProps {
   isEditMode?: boolean;
   onClose: () => void;
 }
 
 export const CreateEventModal = ({ isEditMode = false, onClose }: CreateEventModalProps) => {
-
+  const { calendars } = useCalendarStore();
   const createEvent = useEventStore((s) => s.createEvent);
   const updateEvent = useEventStore((s) => s.updateEvent);
   const selectedEvent = useEventStore((s) => s.selectedEvent);
@@ -41,20 +33,18 @@ export const CreateEventModal = ({ isEditMode = false, onClose }: CreateEventMod
   const [title, setTitle] = useState(isEditMode ? selectedEvent?.title || '' : '');
   const [date, setDate] = useState(isEditMode ? selectedEvent?.date || new Date() : new Date());
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-
   const [startTime, setStartTime] = useState(isEditMode ? selectedEvent?.startTime || '' : '');
   const [endTime, setEndTime] = useState(isEditMode ? selectedEvent?.endTime || '' : '');
-
   const [allDay, setAllDay] = useState(isEditMode ? selectedEvent?.allDay || false : false);
   const [repeat, setRepeat] = useState<any>(isEditMode ? selectedEvent?.repeat || 'none' : 'none');
   const [isRepeatOpen, setIsRepeatOpen] = useState(false);
-
-  const initialCalendar = isEditMode 
-    ? calendars.find(c => c.id === selectedEvent?.calendarId) || calendars[0]
-    : calendars[0];
-  const [calendar, setCalendar] = useState(initialCalendar);
-  
   const [description, setDescription] = useState(isEditMode ? selectedEvent?.description || '' : '');
+
+  const initialCalendar = isEditMode
+    ? calendars.find(c => String(c.id) === String(selectedEvent?.calendarId)) || calendars[0]
+    : calendars[0];
+
+  const [calendar, setCalendar] = useState(initialCalendar);
 
   const [timeError, setTimeError] = useState<string | null>(null);
   const [titleError, setTitleError] = useState<string | null>(null);
@@ -87,16 +77,22 @@ export const CreateEventModal = ({ isEditMode = false, onClose }: CreateEventMod
   };
 
   const handleSave = () => {
-
     if (!title.trim()) {
       setTitleError('Title is required');
       titleInputRef.current?.focus();
       return;
     }
+
+    if (!calendar) {
+      setSaveError('Please select a calendar');
+      return;
+    }
+
     if (!allDay && (!startTime || !endTime)) {
       setTimeError('Choose time is required');
       return;
     }
+
     if (!allDay && timeToMinutes(endTime) <= timeToMinutes(startTime)) {
       setTimeError('End time must be later than start time');
       return;
@@ -109,7 +105,7 @@ export const CreateEventModal = ({ isEditMode = false, onClose }: CreateEventMod
       endTime,
       allDay,
       repeat,
-      calendarId: calendar.id,
+      calendarId: String(calendar.id),
       description,
     };
 
@@ -123,43 +119,31 @@ export const CreateEventModal = ({ isEditMode = false, onClose }: CreateEventMod
     }
 
     setSaveError(null);
-    onClose(); 
+    if (typeof onClose === 'function') {
+      onClose()
+    }
   };
 
   useEffect(() => {
-    if (!saveError) return;
-    const timer = setTimeout(() => setSaveError(null), 3000);
-    return () => clearTimeout(timer);
-  }, [saveError]);
+    if (isEditMode && selectedEvent) {
+      setTitle(selectedEvent.title);
+      setDate(selectedEvent.date);
+      setStartTime(selectedEvent.startTime || '');
+      setEndTime(selectedEvent.endTime || '');
+      setAllDay(selectedEvent.allDay || false);
+      setRepeat(selectedEvent.repeat || 'none');
+      setDescription(selectedEvent.description || '');
+
+      const currentCal = calendars.find(c => String(c.id) === String(selectedEvent.calendarId));
+      if (currentCal) setCalendar(currentCal);
+    }
+  }, [isEditMode, selectedEvent, calendars]);
 
   useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as Node;
-      if (isCalendarOpen && dateRef.current && !dateRef.current.contains(target)) setIsCalendarOpen(false);
-      if (isRepeatOpen && repeatRef.current && !repeatRef.current.contains(target)) setIsRepeatOpen(false);
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isCalendarOpen, isRepeatOpen]);
-
-  useEffect(() => {
-    titleInputRef.current?.focus();
-  }, []);
-
-useEffect(() => {
-  if (isEditMode && selectedEvent) {
-    setTitle(selectedEvent.title);
-    setDate(selectedEvent.date);
-    setStartTime(selectedEvent.startTime);
-    setEndTime(selectedEvent.endTime);
-    setAllDay(selectedEvent.allDay);
-    setRepeat(selectedEvent.repeat);
-    setDescription(selectedEvent.description || '');
-    
-    const currentCal = calendars.find(c => c.id === selectedEvent.calendarId);
-    if (currentCal) setCalendar(currentCal);
-  }
-}, [isEditMode, selectedEvent]);
+    if (!calendar && calendars.length > 0) {
+      setCalendar(calendars[0]);
+    }
+  }, [calendars, calendar]);
 
   return (
     <div
@@ -171,7 +155,6 @@ useEffect(() => {
         }
       }}
     >
-
       <h2 className={styles.title}>{isEditMode ? 'Edit event' : 'Create event'}</h2>
 
       <div className={styles.containerTitle}>
@@ -259,9 +242,7 @@ useEffect(() => {
               {repeatOptions.map((option) => (
                 <div
                   key={option.value}
-                  className={`${styles.repeatOption} ${
-                    option.value === repeat ? styles.active : ''
-                  }`}
+                  className={`${styles.repeatOption} ${option.value === repeat ? styles.active : ''}`}
                   onClick={(e) => {
                     e.stopPropagation();
                     setRepeat(option.value as any);
@@ -282,7 +263,10 @@ useEffect(() => {
         <CalendarSelect
           value={calendar}
           options={calendars}
-          onChange={setCalendar}
+          onChange={(option) => {
+            const found = calendars.find((c) => String(c.id) === String(option.id));
+            if (found) setCalendar(found);
+          }}
         />
       </div>
 
@@ -300,7 +284,7 @@ useEffect(() => {
       <div className={styles.footer}>
         {saveError && <div className={styles.saveError}>{saveError}</div>}
         <button className={styles.btnSave} onClick={handleSave}>
-          {isEditMode ? 'Save' : 'Create'} 
+          {isEditMode ? 'Save' : 'Create'}
         </button>
       </div>
     </div>

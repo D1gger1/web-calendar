@@ -19,10 +19,16 @@ export const DatePicker: React.FC<DatePickerProps> = ({ value, onChange }) => {
         dates.push(d);
     }
 
-    const isSameDay = (a: Date, b: Date) =>
-        a.getFullYear() === b.getFullYear() &&
-        a.getMonth() === b.getMonth() &&
-        a.getDate() === b.getDate();
+    const isSameDay = (a: Date | string, b: Date | string) => {
+        if (!a || !b) return false;
+        const d1 = new Date(a);
+        const d2 = new Date(b);
+        return (
+            d1.getFullYear() === d2.getFullYear() &&
+            d1.getMonth() === d2.getMonth() &&
+            d1.getDate() === d2.getDate()
+        );
+    };
 
     const prevMonth = () => setViewDate(new Date(year, month - 1, 1));
     const nextMonth = () => setViewDate(new Date(year, month + 1, 1));
@@ -44,8 +50,8 @@ export const DatePicker: React.FC<DatePickerProps> = ({ value, onChange }) => {
             </div>
 
             <div className={styles.weekdays}>
-                {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((w) => (
-                    <div key={w}>{w}</div>
+                {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((w, index) => (
+                    <div key={`${w}-${index}`}>{w}</div>
                 ))}
             </div>
 

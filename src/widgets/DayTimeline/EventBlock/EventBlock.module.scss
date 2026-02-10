@@ -2,15 +2,18 @@
   position: absolute;
   left: 0;
   right: 0;
-  --event-color: #3b82f6;
+  
+  /* УДАЛИ ЭТУ СТРОКУ: --event-color: #3b82f6; */
+  
+  /* Теперь background-color будет брать значение из React */
   background-color: color-mix(
     in srgb,
-    var(--event-color) 18%,
+    var(--event-color, #3b82f6) 18%, /* Добавь дефолт в var() на всякий случай */
     transparent
   );
+  
   border-radius: 6px;
   padding: 6px 8px 6px 10px;
-
   color: #111827;
   font-size: 12px;
   box-sizing: border-box;
@@ -22,11 +25,11 @@
   position: absolute;
   top: 0;
   left: 0;
-
   width: 4px;
   height: 100%;
 
-  background-color: var(--event-color);
+  /* Здесь тоже подтянется динамический цвет */
+  background-color: var(--event-color, #3b82f6); 
   border-radius: 6px 0 0 6px;
 }
 

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Modal } from '../../../../shared/ui/Modal/Modal';
 import { ColorPicker } from '../../../../shared/ui/ColourPicker/ColorPicker';
 import { useCalendarStore, type CalendarCategory } from '../../../../entities/calendar/model/calendarStore';
+import { useNotificationStore } from '../../../../entities/notification/notificationStore';
 import styles from './CreateCalendarModal.module.scss';
 import imgColorPicker from '../../../../assets/ColorPicker.svg';
 import imgTitle from '../../../../assets/title.png';
@@ -16,23 +17,33 @@ export const CreateCalendarModal = ({ isOpen, onClose, editData }: Props) => {
   const [title, setTitle] = useState('');
   const [color, setColor] = useState('#9F2957');
 
-  const { addCalendar, updateCalendar } = useCalendarStore();
+  const { calendars, addCalendar, updateCalendar } = useCalendarStore();
+  const { showNotification } = useNotificationStore();
 
   const handleClose = () => {
     setTitle('');
     setColor('#9F2957');
     onClose();
-  };
+  }
 
   const handleSave = () => {
     if (!title.trim()) return;
 
     if (editData) {
       updateCalendar(editData.id, title, color);
+      showNotification('Calendar updated successfully');
+      handleClose();
     } else {
+
+      if (calendars.length >= 4) {
+        showNotification('Maximum 4 calendars allowed');
+        return;
+      }
+
       addCalendar(title, color);
+      showNotification('Calendar created successfully');
+      handleClose();
     }
-    handleClose();
   };
 
   useEffect(() => {

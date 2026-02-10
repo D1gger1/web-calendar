@@ -1,5 +1,5 @@
 import styles from './DayTimeline.module.scss';
-import { useCalendarStore } from '../../entities/event/model/store';
+import { useCalendarStore } from '../../entities/calendar/model/calendarStore';
 import { useEventStore } from '../../entities/event/model/eventStore';
 import { DayHeader } from './DayHeader';
 import { TimeColumn } from './TimeColumn';
@@ -9,13 +9,30 @@ import { EventDetailsModal } from '../../features/eventDetails/EventDetailModal'
 import { calculateEventLayout } from '../../features/dayTimeline/lib/calculateEventLayout';
 
 export const DayTimeline = () => {
-  const currentDate = useCalendarStore((state) => state.currentDate);
-  const getDayEvents = useCalendarStore((state) => state.getDayEvents);
-  const events = useEventStore((state) => state.events);
 
-  const dayEvents = getDayEvents ? getDayEvents(events) : [];
+  const { calendars, currentDate } = useCalendarStore();
+  const { events } = useEventStore();
 
-  const layoutEvents = calculateEventLayout(dayEvents);
+  const isSameDay = (d1: Date, d2: Date) => {
+
+    const date1 = d1 instanceof Date ? d1 : new Date(d1);
+    const date2 = d2 instanceof Date ? d2 : new Date(d2);
+    
+    return (
+      date1.getDate() === date2.getDate() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getFullYear() === date2.getFullYear()
+    );
+  };
+
+  const dayEvents = events.filter((event) => isSameDay(event.date, currentDate));
+
+  const visibleEvents = dayEvents.filter(event => {
+    const parentCal = calendars.find(c => String(c.id) === String(event.calendarId));
+    return parentCal ? parentCal.visible : true;
+  });
+
+  const layoutEvents = calculateEventLayout(visibleEvents);
 
   return (
     <div className={styles.wrapper}>
@@ -29,27 +46,21 @@ export const DayTimeline = () => {
         <div className={styles.timeline}>
           <TimelineGrid />
 
-          {layoutEvents.map((event) => (
-            <EventBlock
-              key={event.id}
-              event={event}
-              calendarColor={getCalendarColor(event.calendarId)}
-            />
-          ))}
+          {layoutEvents.map((event) => {
+            const targetCal = calendars.find(c => String(c.id) === String(event.calendarId));
+            const dynamicColor = targetCal ? targetCal.color : '#CBD5E1';
+
+            return (
+              <EventBlock
+                key={event.id}
+                event={event}
+                calendarColor={dynamicColor}
+              />
+            );
+          })}
         </div>
         <EventDetailsModal />
       </div>
     </div>
   );
-};
-
-const getCalendarColor = (id: string) => {
-  const map: Record<string, string> = {
-    '1': '#FACC15',
-    '2': '#9333EA',
-    '3': '#BE123C',
-    '4': '#0D9488',
-  };
-
-  return map[id] ?? '#CBD5E1';
 };

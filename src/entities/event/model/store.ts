@@ -1,46 +1,68 @@
-import { create } from "zustand";
-import type { CalendarEvent } from "./types";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
-type CalendarState = {
-    currentDate: Date;
-    setDate: (date: Date) => void;
-    nextDay: () => void;
-    prevDay: () => void;
-    
-    getDayEvents?: (
-        events: CalendarEvent[]
-    ) => CalendarEvent[]
-};
+export interface CalendarCategory {
+    id: string;
+    title: string;
+    color: string;
+    visible: boolean;
+}
 
-export const useCalendarStore = create<CalendarState>((set, get) => ({
-    currentDate: new Date(),
+// 1. Обязательно добавляем типы в интерфейс
+export interface CalendarState {
+    calendars: CalendarCategory[];
+    currentDate: Date; 
+    addCalendar: (title: string, color: string) => void;
+    toggleVisibility: (id: string) => void;
+    deleteCalendar: (id: string) => void;
+    updateCalendar: (id: string, title: string, color: string) => void;
+    setCurrentDate: (date: Date) => void; // <--- Проверь эту строку
+}
 
-    setDate: (date) => set({currentDate: date}),
+export const useCalendarStore = create<CalendarState>()(
+    persist(
+        (set) => ({
+            calendars: [],
+            currentDate: new Date(),
 
-    nextDay: () => 
-        set((state) => ({
-            currentDate: new Date(
-            state.currentDate.getFullYear(),
-            state.currentDate.getMonth(),
-            state.currentDate.getDate() + 1
-            ),
-        })),
+            // 2. Реализация метода
+            setCurrentDate: (date) => set({ currentDate: date }),
 
-        prevDay: () => 
-            set((state) => ({
-                currentDate: new Date(
-                    state.currentDate.getFullYear(),
-                    state.currentDate.getMonth(),
-                    state.currentDate.getDate() - 1
-                ),
-            })),
+            addCalendar: (title, color) =>
+                set((state) => ({
+                    calendars: [
+                        ...state.calendars,
+                        { id: crypto.randomUUID(), title, color, visible: true },
+                    ],
+                })),
+            
+            toggleVisibility: (id) =>
+                set((state) => ({
+                    calendars: state.calendars.map((c) =>
+                        c.id === id ? { ...c, visible: !c.visible } : c
+                    ),
+                })),
 
-            getDayEvents: (events) => {
-                const currentDate = get().currentDate;
+            deleteCalendar: (id) =>
+                set((state) => ({
+                    calendars: state.calendars.filter((c) => c.id !== id),
+                })),
 
-                return events.filter(
-                    (event) => 
-                        event.date.toDateString() === currentDate.toDateString()
-                );
+            updateCalendar: (id, title, color) =>
+                set((state) => ({
+                    calendars: state.calendars.map((c) =>
+                        c.id === id ? { ...c, title, color } : c
+                    ),
+                })),
+        }),
+        {
+            name: 'calendar-storage',
+            // Превращаем строку из localStorage обратно в объект Date при загрузке
+            onRehydrateStorage: () => (state) => {
+                if (state && state.currentDate) {
+                    state.currentDate = new Date(state.currentDate);
+                }
             },
-}));
+        }
+    )
+);
