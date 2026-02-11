@@ -2,43 +2,62 @@
   position: absolute;
   left: 0;
   right: 0;
-  
-  /* УДАЛИ ЭТУ СТРОКУ: --event-color: #3b82f6; */
-  
-  /* Теперь background-color будет брать значение из React */
-  background-color: color-mix(
-    in srgb,
-    var(--event-color, #3b82f6) 18%, /* Добавь дефолт в var() на всякий случай */
-    transparent
-  );
-  
+  background-color: color-mix(in srgb, var(--event-color, #3b82f6) 18%, transparent);
   border-radius: 6px;
-  padding: 6px 8px 6px 10px;
+  padding: 4px 8px 4px 10px;
   color: #111827;
   font-size: 12px;
   box-sizing: border-box;
   overflow: hidden;
-}
+  display: flex;
+  flex-direction: column;
 
-.event::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 4px;
-  height: 100%;
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background-color: var(--event-color, #3b82f6);
+    border-radius: 6px 0 0 6px;
+  }
 
-  /* Здесь тоже подтянется динамический цвет */
-  background-color: var(--event-color, #3b82f6); 
-  border-radius: 6px 0 0 6px;
+  .content {
+    display: flex;
+    flex-direction: inherit;
+    width: 100%;
+    overflow: hidden;
+  }
 }
 
 .title {
-  font-weight: 600;
+  font-size: 15px;
+
 }
 
 .time {
   margin-top: 2px;
-  font-size: 11px;
-  opacity: 0.8;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.short {
+  flex-direction: row;
+  align-items: center;
+
+
+  .content {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .title {
+    font-size: 13px;
+  }
+
+  .time {
+    margin-top: 0;
+    margin-left: 2px;
+  }
 }

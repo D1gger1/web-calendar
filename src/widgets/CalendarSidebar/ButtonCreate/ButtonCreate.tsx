@@ -14,8 +14,8 @@ export const ButtonCreate = () => {
                 </span>Create
             </button>
 
-            <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-                <CreateEventModal />
+            <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} className={styles.modal}>
+                <CreateEventModal onClose={() => setIsOpen(false)} />
             </Modal>
         </div>
     )

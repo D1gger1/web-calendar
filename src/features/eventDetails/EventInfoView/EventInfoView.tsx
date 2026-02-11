@@ -1,6 +1,13 @@
 import styles from './EventInfoView.module.scss';
 import { useEventStore } from '../../../entities/event/model/eventStore';
 import { useCalendarStore } from '../../../entities/calendar/model/calendarStore';
+import closeBtn from '../../../assets/closeBtn.svg';
+import editBtn from '../../../assets/editIcon.svg';
+import deleteBtn from '../../../assets/dltIcn.svg';
+import titleIcn from '../../../assets/title.png';
+import infoIcn from '../../../assets/infoIcon.svg';
+import calendarIcn from '../../../assets/calendar.png';
+import descrIcn from '../../../assets/description.png';
 
 interface Props {
     onEdit: () => void;
@@ -21,27 +28,26 @@ export const EventInfoView = ({ onEdit, onDelete, onClose }: Props) => {
     return (
         <div className={styles.container}>
             <header className={styles.header}>
-                <h3>Event information</h3>
+                <h3 className={styles.title}>Event information</h3>
                 <div className={styles.actions}>
-                    <button onClick={onEdit} className={styles.iconBtn} title="Edit">
-                        <span className={styles.btnIcon}>✎</span>
+                    <button onClick={onEdit} className={styles.editBtn} title="Edit">
+                        <span className={styles.btnIcon}><img src={editBtn} alt="Edit" /></span>
                     </button>
-                    
-                    <button onClick={onDelete} className={styles.iconBtn} title="Delete">
-                        <span className={styles.btnIcon}>🗑️</span>
+
+                    <button onClick={onDelete} className={styles.deleteBtn} title="Delete">
+                        <span className={styles.btnIcon}><img src={deleteBtn} alt="Delete" /></span>
                     </button>
-                    
-                    <button onClick={onClose} className={styles.iconBtn} title="Close">
-                        <span className={styles.btnIcon}>✕</span>
+
+                    <button onClick={onClose} className={styles.closeBtn} title="Close">
+                        <span className={styles.btnIcon}><img src={closeBtn} alt="Close" /></span>
                     </button>
                 </div>
             </header>
-
             <div className={styles.content}>
-                <h2 className={styles.title}>{event.title}</h2>
+                <h2 className={styles.title}><img src={titleIcn} alt="Title" />{event.title}</h2>
 
                 <div className={styles.row}>
-                    <span className={styles.icon}>🕒</span>
+                    <span className={styles.icon}><img src={infoIcn} alt="Info" /></span>
                     <div>
                         <p>
                             {event.date.toLocaleDateString('en-US', {
@@ -54,7 +60,7 @@ export const EventInfoView = ({ onEdit, onDelete, onClose }: Props) => {
                 </div>
 
                 <div className={styles.row}>
-                    <span className={styles.icon}>📅</span>
+                    <span className={styles.icon}><img src={calendarIcn} alt="Calendar" /></span>
                     <div className={styles.calendarTag}>
                         <span
                             className={styles.colorCircle}
@@ -66,7 +72,7 @@ export const EventInfoView = ({ onEdit, onDelete, onClose }: Props) => {
 
                 {event.description && (
                     <div className={styles.row}>
-                        <span className={styles.icon}>☰</span>
+                        <span className={styles.icon}><img src={descrIcn} alt="Description" /></span>
                         <p>{event.description}</p>
                     </div>
                 )}

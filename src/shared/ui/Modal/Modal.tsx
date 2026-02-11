@@ -18,13 +18,13 @@ export const Modal: React.FC<ModalProps> = ({
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className={styles.header}>
-                    <button
+                    {/* <button
                         onClick={onClose}
                         className={styles.closeButton}
                         aria-label="Close modal"
                     >
                         <img src={closeBtn} alt="" className={styles.closeIcon} />
-                    </button>
+                    </button> */}
                 </div>
 
                 {children}

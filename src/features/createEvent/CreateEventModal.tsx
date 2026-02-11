@@ -6,6 +6,7 @@ import { CalendarSelect } from './CalendarSelect/CalendaarSelect';
 import { useEventStore } from '../../entities/event/model/eventStore';
 import { useCalendarStore } from '../../entities/calendar/model/calendarStore';
 import { timeToMinutes } from '../../shared/lib/time';
+
 import imgTitle from '../../assets/title.png';
 import imgDate from '../../assets/Date.png';
 import imgCalendar from '../../assets/calendar.png';
@@ -14,9 +15,9 @@ import imgDescript from '../../assets/description.png';
 const repeatOptions = [
   { value: 'none', label: 'Does not repeat' },
   { value: 'daily', label: 'Daily' },
-  { value: 'weekly', label: 'Weekly on Thursday' },
+  { value: 'weekly', label: 'Weekly' },
   { value: 'monthly', label: 'Monthly' },
-  { value: 'annually', label: 'Annually on November 2' },
+  { value: 'annually', label: 'Annually' },
 ] as const;
 
 interface CreateEventModalProps {
@@ -33,26 +34,37 @@ export const CreateEventModal = ({ isEditMode = false, onClose }: CreateEventMod
   const [title, setTitle] = useState(isEditMode ? selectedEvent?.title || '' : '');
   const [date, setDate] = useState(isEditMode ? selectedEvent?.date || new Date() : new Date());
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  const [startTime, setStartTime] = useState(isEditMode ? selectedEvent?.startTime || '' : '');
-  const [endTime, setEndTime] = useState(isEditMode ? selectedEvent?.endTime || '' : '');
+  const [startTime, setStartTime] = useState(isEditMode ? selectedEvent?.startTime || '10:00 AM' : '10:00 AM');
+  const [endTime, setEndTime] = useState(isEditMode ? selectedEvent?.endTime || '10:30 AM' : '10:30 AM');
   const [allDay, setAllDay] = useState(isEditMode ? selectedEvent?.allDay || false : false);
+
   const [repeat, setRepeat] = useState<any>(isEditMode ? selectedEvent?.repeat || 'none' : 'none');
+  
   const [isRepeatOpen, setIsRepeatOpen] = useState(false);
   const [description, setDescription] = useState(isEditMode ? selectedEvent?.description || '' : '');
 
-  const initialCalendar = isEditMode
-    ? calendars.find(c => String(c.id) === String(selectedEvent?.calendarId)) || calendars[0]
-    : calendars[0];
-
-  const [calendar, setCalendar] = useState(initialCalendar);
+  const [calendar, setCalendar] = useState(
+    isEditMode && selectedEvent 
+      ? calendars.find(c => String(c.id) === String(selectedEvent.calendarId)) || calendars[0]
+      : calendars[0]
+  );
 
   const [timeError, setTimeError] = useState<string | null>(null);
   const [titleError, setTitleError] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
 
-  const dateRef = useRef<HTMLDivElement | null>(null);
   const repeatRef = useRef<HTMLDivElement | null>(null);
   const titleInputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (repeatRef.current && !repeatRef.current.contains(event.target as Node)) {
+        setIsRepeatOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const addMinutes = (time: string, minutes: number) => {
     const total = timeToMinutes(time) + minutes;
@@ -71,25 +83,10 @@ export const CreateEventModal = ({ isEditMode = false, onClose }: CreateEventMod
     }
   };
 
-  const handleEndTimeChange = (v: string) => {
-    setEndTime(v);
-    setTimeError(null);
-  };
-
   const handleSave = () => {
     if (!title.trim()) {
       setTitleError('Title is required');
       titleInputRef.current?.focus();
-      return;
-    }
-
-    if (!calendar) {
-      setSaveError('Please select a calendar');
-      return;
-    }
-
-    if (!allDay && (!startTime || !endTime)) {
-      setTimeError('Choose time is required');
       return;
     }
 
@@ -101,10 +98,10 @@ export const CreateEventModal = ({ isEditMode = false, onClose }: CreateEventMod
     const eventData = {
       title,
       date,
-      startTime,
-      endTime,
+      startTime: allDay ? '' : startTime,
+      endTime: allDay ? '' : endTime,
       allDay,
-      repeat,
+      repeat: repeat as any,
       calendarId: String(calendar.id),
       description,
     };
@@ -113,61 +110,25 @@ export const CreateEventModal = ({ isEditMode = false, onClose }: CreateEventMod
       ? updateEvent(selectedEvent.id, eventData)
       : createEvent(eventData);
 
-    if (!result.ok) {
+    if (result.ok) {
+      onClose();
+    } else {
       setSaveError(result.error);
-      return;
-    }
-
-    setSaveError(null);
-    if (typeof onClose === 'function') {
-      onClose()
     }
   };
 
-  useEffect(() => {
-    if (isEditMode && selectedEvent) {
-      setTitle(selectedEvent.title);
-      setDate(selectedEvent.date);
-      setStartTime(selectedEvent.startTime || '');
-      setEndTime(selectedEvent.endTime || '');
-      setAllDay(selectedEvent.allDay || false);
-      setRepeat(selectedEvent.repeat || 'none');
-      setDescription(selectedEvent.description || '');
-
-      const currentCal = calendars.find(c => String(c.id) === String(selectedEvent.calendarId));
-      if (currentCal) setCalendar(currentCal);
-    }
-  }, [isEditMode, selectedEvent, calendars]);
-
-  useEffect(() => {
-    if (!calendar && calendars.length > 0) {
-      setCalendar(calendars[0]);
-    }
-  }, [calendars, calendar]);
-
   return (
-    <div
-      className={styles.modal}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          handleSave();
-        }
-      }}
-    >
+    <div className={styles.modal} onKeyDown={(e) => e.key === 'Enter' && handleSave()}>
       <h2 className={styles.title}>{isEditMode ? 'Edit event' : 'Create event'}</h2>
 
       <div className={styles.containerTitle}>
         <label className={styles.labelTitle}>Title</label>
-        <img src={imgTitle} alt="title" className={styles.titleImage} />
+        <img src={imgTitle} alt="" className={styles.titleImage} />
         <input
           ref={titleInputRef}
           className={styles.titleInput}
           value={title}
-          onChange={(e) => {
-            setTitle(e.target.value);
-            if (titleError) setTitleError(null);
-          }}
+          onChange={(e) => { setTitle(e.target.value); setTitleError(null); }}
           placeholder="Enter title"
         />
         {titleError && <div className={styles.error}>{titleError}</div>}
@@ -176,27 +137,13 @@ export const CreateEventModal = ({ isEditMode = false, onClose }: CreateEventMod
       <div className={styles.row}>
         <div className={styles.containerDate}>
           <label className={styles.labelDate}>Date</label>
-          <img src={imgDate} alt="date" className={styles.dateImage} />
-          <div
-            className={styles.dateInput}
-            onClick={() => setIsCalendarOpen((v) => !v)}
-          >
-            {date.toLocaleDateString('en-US', {
-              weekday: 'short',
-              month: 'short',
-              day: 'numeric',
-            })}
+          <img src={imgDate} alt="" className={styles.dateImage} />
+          <div className={styles.dateInput} onClick={() => setIsCalendarOpen(!isCalendarOpen)}>
+            {date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
           </div>
-
           {isCalendarOpen && (
-            <div className={styles.calendarPopover} ref={dateRef}>
-              <DatePicker
-                value={date}
-                onChange={(d) => {
-                  setDate(d);
-                  setIsCalendarOpen(false);
-                }}
-              />
+            <div className={styles.calendarPopover}>
+              <DatePicker value={date} onChange={(d) => { setDate(d); setIsCalendarOpen(false); }} />
             </div>
           )}
         </div>
@@ -206,7 +153,7 @@ export const CreateEventModal = ({ isEditMode = false, onClose }: CreateEventMod
           <div className={styles.timeRow}>
             <SelectMenu value={startTime} onChange={handleStartTimeChange} disabled={allDay} />
             <span className={styles.timeSeparator}>–</span>
-            <SelectMenu value={endTime} onChange={handleEndTimeChange} disabled={allDay} />
+            <SelectMenu value={endTime} onChange={(v) => { setEndTime(v); setTimeError(null); }} disabled={allDay} />
           </div>
           {timeError && <div className={styles.timeError}>{timeError}</div>}
         </div>
@@ -214,27 +161,11 @@ export const CreateEventModal = ({ isEditMode = false, onClose }: CreateEventMod
 
       <div className={styles.rowDay}>
         <label className={styles.labelCheckbox}>
-          <input
-            type="checkbox"
-            checked={allDay}
-            onChange={(e) => {
-              const checked = e.target.checked;
-              setAllDay(checked);
-              if (checked) {
-                setStartTime('');
-                setEndTime('');
-                setTimeError(null);
-              }
-            }}
-          />
+          <input type="checkbox" checked={allDay} onChange={(e) => setAllDay(e.target.checked)} />
           All day
         </label>
 
-        <div
-          ref={repeatRef}
-          className={styles.repeat}
-          onClick={() => setIsRepeatOpen((v) => !v)}
-        >
+        <div ref={repeatRef} className={styles.repeat} onClick={() => setIsRepeatOpen(!isRepeatOpen)}>
           {repeatOptions.find((o) => o.value === repeat)?.label}
 
           {isRepeatOpen && (
@@ -245,7 +176,7 @@ export const CreateEventModal = ({ isEditMode = false, onClose }: CreateEventMod
                   className={`${styles.repeatOption} ${option.value === repeat ? styles.active : ''}`}
                   onClick={(e) => {
                     e.stopPropagation();
-                    setRepeat(option.value as any);
+                    setRepeat(option.value);
                     setIsRepeatOpen(false);
                   }}
                 >
@@ -259,20 +190,17 @@ export const CreateEventModal = ({ isEditMode = false, onClose }: CreateEventMod
 
       <div className={styles.containerCalendar}>
         <label className={styles.labelCalendar}>Calendar</label>
-        <img src={imgCalendar} alt="calendar" className={styles.imgCalendar} />
+        <img src={imgCalendar} alt="" className={styles.imgCalendar} />
         <CalendarSelect
           value={calendar}
           options={calendars}
-          onChange={(option) => {
-            const found = calendars.find((c) => String(c.id) === String(option.id));
-            if (found) setCalendar(found);
-          }}
+          onChange={(opt) => setCalendar(calendars.find(c => String(c.id) === String(opt.id)) || calendars[0])}
         />
       </div>
 
       <div className={styles.containerDescript}>
         <label className={styles.labelDescript}>Description</label>
-        <img src={imgDescript} alt="description" className={styles.imgDescript} />
+        <img src={imgDescript} alt="" className={styles.imgDescript} />
         <textarea
           className={styles.txtDescript}
           value={description}

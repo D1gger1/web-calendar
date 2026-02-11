@@ -5,12 +5,12 @@ import { HOUR_HEIGHT } from '../constants';
 import { useEventStore } from '../../../entities/event/model/eventStore';
 
 type Props = {
-  event: CalendarEvent; 
+  event: CalendarEvent;
   calendarColor: string;
 };
 
 const START_MINUTES = 6 * 60;
-const VISIBLE_MINUTES = 18 * 60; 
+const VISIBLE_MINUTES = 18 * 60;
 const PIXELS_PER_MINUTE = HOUR_HEIGHT / 60;
 
 export const EventBlock = ({ event, calendarColor }: Props) => {
@@ -20,28 +20,29 @@ export const EventBlock = ({ event, calendarColor }: Props) => {
     return null;
   }
 
-  const rawStart = event.allDay
-    ? 0
-    : timeToMinutes(event.startTime) - START_MINUTES;
-
-  const rawEnd = event.allDay
+  const duration = event.allDay
     ? VISIBLE_MINUTES
-    : timeToMinutes(event.endTime) - START_MINUTES;
+    : timeToMinutes(event.endTime) - timeToMinutes(event.startTime);
+
+  const isShort = !event.allDay && duration <= 30;
+
+  const rawStart = event.allDay ? 0 : timeToMinutes(event.startTime) - START_MINUTES;
+  const rawEnd = event.allDay ? VISIBLE_MINUTES : timeToMinutes(event.endTime) - START_MINUTES;
 
   const start = Math.max(rawStart, 0);
   const end = Math.min(rawEnd, VISIBLE_MINUTES);
 
   const top = start * PIXELS_PER_MINUTE;
-  const height = Math.max((end - start) * PIXELS_PER_MINUTE, 25); 
+  const height = Math.max((end - start) * PIXELS_PER_MINUTE, 22); 
 
   return (
     <div
-      className={styles.event}
+      className={`${styles.event} ${isShort ? styles.short : ''}`}
       style={{
         top,
         height,
-        width: '100%', 
-        left: 0,       
+        width: '100%',
+        left: 0,
         ['--event-color' as any]: calendarColor,
       }}
       onClick={(e) => {
@@ -49,13 +50,14 @@ export const EventBlock = ({ event, calendarColor }: Props) => {
         setSelectedEvent(event);
       }}
     >
-      <div className={styles.title}>{event.title}</div>
-
-      {!event.allDay && (
-        <div className={styles.time}>
-          {event.startTime} - {event.endTime}
-        </div>
-      )}
+      <div className={styles.content}>
+        <div className={styles.title}>{event.title}</div>
+        {!event.allDay && (
+          <div className={styles.time}>
+            {isShort ? `, ${event.startTime}` : `${event.startTime} - ${event.endTime}`}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
