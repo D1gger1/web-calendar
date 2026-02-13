@@ -5,6 +5,8 @@ import { useCalendarStore, type CalendarCategory } from '../../../entities/calen
 import { useNotificationStore } from '../../../entities/notification/notificationStore';
 import { DeleteConfirmModal } from '../../../features/eventDetails/DeletConfirmModal/DeleteConfirmModal';
 import { CreateCalendarModal } from './CreateCalendarModal/CreateCalendarModal';
+import deleteIcon from '../../../assets/dltIcn.svg';
+import editIcon from '../../../assets/editIcon.svg';
 
 interface CalendarItemProps {
   calendar: CalendarCategory;
@@ -44,20 +46,21 @@ export const CalendarItem = ({ calendar }: CalendarItemProps) => {
 
         <div className={styles.actions}>
           <button
-            onClick={() => setIsEditModalOpen(true)}
-            className={styles.editBtn}
-            title="Edit"
-          >
-            ✎
-          </button>
-
-          <button
             onClick={() => setIsDeleteModalOpen(true)}
             className={styles.deleteBtn}
             title="Delete"
           >
-            🗑
+            <img src={deleteIcon} alt="Delete" />
           </button>
+
+          <button
+            onClick={() => setIsEditModalOpen(true)}
+            className={styles.editBtn}
+            title="Edit"
+          >
+            <img src={editIcon} alt="Edit" />
+          </button>
+
         </div>
       </div>
 
@@ -73,7 +76,7 @@ export const CalendarItem = ({ calendar }: CalendarItemProps) => {
         <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} className={styles.modal}>
           <DeleteConfirmModal
             title="Delete Calendar"
-            description={`Are you sure you want to delete "${calendar.title}"?`}
+            description={`Are you sure you want to delete ${calendar.title}? You'll no longer have access to this calendar and its events.`}
             onConfirm={handleDelete}
             onCancel={() => setIsDeleteModalOpen(false)}
           />

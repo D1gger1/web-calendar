@@ -1,8 +1,6 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 8px; 
   width: 100%;
 }
 
@@ -10,7 +8,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 8px;
+
   h2 {
     margin: 0;
     font-size: 1.25rem;
@@ -44,15 +44,21 @@
   border: 1px solid #e2e8f0;
   background: white;
   cursor: pointer;
-  &:hover { background: #f8fafc; }
+
+  &:hover {
+    background: #f8fafc;
+  }
 }
 
 .deleteBtn {
   padding: 8px 16px;
   border-radius: 6px;
   border: none;
-  background: #ef4444;
+  background: #00AE1C;
   color: white;
   cursor: pointer;
-  &:hover { background: #dc2626; }
+
+  &:hover {
+    background: #016e13c4;
+  }
 }

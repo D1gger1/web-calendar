@@ -6,28 +6,110 @@
     font-size: 24px;
     font-weight: 700;
     width: 95%;
+    height: 60px;
     margin: 0 auto;
     border-bottom: 1px solid grey;
 
 }
 
-.editBtn{
+.editBtn {
     background-color: transparent;
     border: none;
     font-size: 18px;
     cursor: pointer;
 }
 
-.deleteBtn{
+.deleteBtn {
     background-color: transparent;
     border: none;
     font-size: 18px;
     cursor: pointer;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
-.closeBtn{
+.closeBtn {
     background-color: transparent;
     border: none;
-    font-size: 18px;
+    font-size: 20px;
     cursor: pointer;
+    position: relative;
+    bottom: 2px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 94%;
+    margin: 0 auto;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: 400;
+}
+
+.iconTitle {
+    width: 14px;
+    height: 14px;
+    margin-right: 12px;
+    position: relative;
+    bottom: 2px;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+}
+
+.infoIcon {
+    width: 15px;
+    height: 15px;
+    margin-right: 12px;
+}
+
+.iconInfo {
+    position: relative;
+    bottom: 10px;
+}
+
+.calendarIcon {
+    width: 14px;
+    height: 14px;
+    margin-right: 12px;
+}
+
+.info {
+    position: relative;
+    bottom: 10px;
+}
+
+.iconDescription {
+    width: 14px;
+    height: 14px;
+    margin-right: 12px;
+    position: relative;
+    top: 5px;
+}
+
+.description {
+    position: relative;
+    top: 8px;
+}
+
+.calendarTag {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.colorCircle {
+    width: 12px;
+    height: 12px;
+    border-radius: 4px;
+    display: inline-block;
+    flex-shrink: 0;
 }

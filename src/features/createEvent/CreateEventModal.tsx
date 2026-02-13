@@ -11,21 +11,15 @@ import imgTitle from '../../assets/title.png';
 import imgDate from '../../assets/Date.png';
 import imgCalendar from '../../assets/calendar.png';
 import imgDescript from '../../assets/description.png';
-
-const repeatOptions = [
-  { value: 'none', label: 'Does not repeat' },
-  { value: 'daily', label: 'Daily' },
-  { value: 'weekly', label: 'Weekly' },
-  { value: 'monthly', label: 'Monthly' },
-  { value: 'annually', label: 'Annually' },
-] as const;
+import closeBtn from '../../assets/closeBtn.svg';
 
 interface CreateEventModalProps {
   isEditMode?: boolean;
   onClose: () => void;
+  className?: string;
 }
 
-export const CreateEventModal = ({ isEditMode = false, onClose }: CreateEventModalProps) => {
+export const CreateEventModal = ({ isEditMode = false, onClose, className }: CreateEventModalProps) => {
   const { calendars } = useCalendarStore();
   const createEvent = useEventStore((s) => s.createEvent);
   const updateEvent = useEventStore((s) => s.updateEvent);
@@ -37,14 +31,12 @@ export const CreateEventModal = ({ isEditMode = false, onClose }: CreateEventMod
   const [startTime, setStartTime] = useState(isEditMode ? selectedEvent?.startTime || '10:00 AM' : '10:00 AM');
   const [endTime, setEndTime] = useState(isEditMode ? selectedEvent?.endTime || '10:30 AM' : '10:30 AM');
   const [allDay, setAllDay] = useState(isEditMode ? selectedEvent?.allDay || false : false);
-
-  const [repeat, setRepeat] = useState<any>(isEditMode ? selectedEvent?.repeat || 'none' : 'none');
-  
+  const [repeat, setRepeat] = useState<string>(isEditMode ? selectedEvent?.repeat || 'none' : 'none');
   const [isRepeatOpen, setIsRepeatOpen] = useState(false);
   const [description, setDescription] = useState(isEditMode ? selectedEvent?.description || '' : '');
 
   const [calendar, setCalendar] = useState(
-    isEditMode && selectedEvent 
+    isEditMode && selectedEvent
       ? calendars.find(c => String(c.id) === String(selectedEvent.calendarId)) || calendars[0]
       : calendars[0]
   );
@@ -55,6 +47,20 @@ export const CreateEventModal = ({ isEditMode = false, onClose }: CreateEventMod
 
   const repeatRef = useRef<HTMLDivElement | null>(null);
   const titleInputRef = useRef<HTMLInputElement | null>(null);
+
+  const getRepeatOptions = (selectedDate: Date) => {
+    const dayName = selectedDate.toLocaleDateString('en-US', { weekday: 'long' });
+    const monthDay = selectedDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+    return [
+      { value: 'none', label: 'Does not repeat' },
+      { value: 'daily', label: 'Daily' },
+      { value: 'weekly', label: `Weekly on ${dayName}` },
+      { value: 'monthly', label: 'Monthly' },
+      { value: 'annually', label: `Annually on ${monthDay}` },
+    ];
+  };
+
+  const repeatOptions = getRepeatOptions(date);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -89,7 +95,6 @@ export const CreateEventModal = ({ isEditMode = false, onClose }: CreateEventMod
       titleInputRef.current?.focus();
       return;
     }
-
     if (!allDay && timeToMinutes(endTime) <= timeToMinutes(startTime)) {
       setTimeError('End time must be later than start time');
       return;
@@ -110,16 +115,16 @@ export const CreateEventModal = ({ isEditMode = false, onClose }: CreateEventMod
       ? updateEvent(selectedEvent.id, eventData)
       : createEvent(eventData);
 
-    if (result.ok) {
-      onClose();
-    } else {
-      setSaveError(result.error);
-    }
+    if (result.ok) onClose();
+    else setSaveError(result.error);
   };
 
   return (
-    <div className={styles.modal} onKeyDown={(e) => e.key === 'Enter' && handleSave()}>
-      <h2 className={styles.title}>{isEditMode ? 'Edit event' : 'Create event'}</h2>
+    <div className={`${styles.modal} ${className || ''}`} onKeyDown={(e) => e.key === 'Enter' && handleSave()}>
+      <div className={styles.header}>
+        <h2 className={styles.title}>{isEditMode ? 'Edit event' : 'Create event'}</h2>
+        <img src={closeBtn} alt="Close" onClick={onClose} className={styles.closeBtn} />
+      </div>
 
       <div className={styles.containerTitle}>
         <label className={styles.labelTitle}>Title</label>
@@ -152,7 +157,7 @@ export const CreateEventModal = ({ isEditMode = false, onClose }: CreateEventMod
           <label className={styles.labelTime}>Time</label>
           <div className={styles.timeRow}>
             <SelectMenu value={startTime} onChange={handleStartTimeChange} disabled={allDay} />
-            <span className={styles.timeSeparator}>–</span>
+            <span className={styles.timeSeparator}>-</span>
             <SelectMenu value={endTime} onChange={(v) => { setEndTime(v); setTimeError(null); }} disabled={allDay} />
           </div>
           {timeError && <div className={styles.timeError}>{timeError}</div>}
@@ -161,13 +166,13 @@ export const CreateEventModal = ({ isEditMode = false, onClose }: CreateEventMod
 
       <div className={styles.rowDay}>
         <label className={styles.labelCheckbox}>
-          <input type="checkbox" checked={allDay} onChange={(e) => setAllDay(e.target.checked)} />
+          <input type="checkbox" checked={allDay} onChange={(e) => setAllDay(e.target.checked)} className={styles.checkboxInput} />
+          <span className={styles.checkmark}></span>
           All day
         </label>
 
         <div ref={repeatRef} className={styles.repeat} onClick={() => setIsRepeatOpen(!isRepeatOpen)}>
           {repeatOptions.find((o) => o.value === repeat)?.label}
-
           {isRepeatOpen && (
             <div className={styles.repeatMenu}>
               {repeatOptions.map((option) => (

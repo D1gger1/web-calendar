@@ -1,4 +1,4 @@
-.list{
+.list {
     display: flex;
     flex-direction: column;
     width: 250px;
@@ -10,26 +10,26 @@
     border-radius: 8px;
 }
 
-.header{
+.header {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     margin-left: 5px;
 }
 
-.title{
+.title {
     font-family: 'Inter', sans-serif;
     font-size: 15px;
     font-weight: 700;
 }
 
-.add{
+.add {
     cursor: pointer;
     border: none;
     background: none;
-    
+
 }
 
-.add span{
+.add span {
     font-size: 20px;
 }

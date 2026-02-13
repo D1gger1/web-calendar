@@ -1,5 +1,5 @@
 * {
-    font-size: 'Inter';
+    font-family: 'Inter', sans-serif;
     box-sizing: border-box;
 }
 
@@ -7,6 +7,20 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+}
+
+.header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.closeBtn {
+    position: relative;
+    bottom: 10px;
+    right: 10px;
+    cursor: pointer;
 }
 
 .title {
@@ -56,7 +70,6 @@
     top: 5px;
     font-size: 10px;
     font-weight: 700;
-
 }
 
 .titleImage {
@@ -64,31 +77,29 @@
     width: 12px;
     height: 12px;
     left: 5px;
-    top: 21px;
+    bottom: 8px;
 }
 
 .row {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-
 }
 
 .containerDate {
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding-top: 7px;
+    flex-direction: column;
+    padding-left: 35px;
+    position: relative;
     margin-left: 15px;
 }
 
 .labelDate {
-    position: relative;
-    bottom: 20px;
-    left: 23px;
     font-size: 10px;
     font-weight: 700;
     margin-bottom: 5px;
+    position: relative;
+    right: 14px;
 }
 
 .dateInput {
@@ -99,21 +110,22 @@
     display: flex;
     align-items: center;
     cursor: pointer;
+    position: relative;
+    right: 13px;
 }
 
 .dateImage {
     position: absolute;
-    width: 15px;
+    width: 14px;
     height: 14px;
-    left: 20px;
-    top: 165px;
-
+    left: -10px;
+    bottom: 20px;
 }
 
 .calendarPopover {
     position: absolute;
-    top: 190px;
-    left: 45px;
+    top: 100%;
+    left: 0;
     z-index: 100;
 }
 
@@ -125,18 +137,19 @@
 }
 
 .labelTime {
-    position: relative;
-    bottom: 10px;
     font-size: 10px;
     font-weight: 700;
     margin-top: 10px;
-
+    position: relative;
+    bottom: 10px;
 }
 
 .timeRow {
     display: flex;
     align-items: center;
     gap: 8px;
+    position: relative;
+    bottom: 2px;
 }
 
 .timeRow>* {
@@ -146,7 +159,7 @@
 .timeSeparator {
     font-size: 14px;
     color: #6b7280;
-    margin-top: 2px;
+    margin-bottom: 25px;
 }
 
 .rowDay {
@@ -154,31 +167,76 @@
     flex-direction: row;
     padding: 10px 30px;
     gap: 10px;
-
 }
 
 .labelCheckbox {
     display: flex;
-    flex-direction: row;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+    font-size: 14px;
+    position: relative;
+    left: 7px;
+}
+
+.checkboxInput {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    height: 12px;
+    width: 12px;
+    background-color: #fff;
+    border: 1px solid #00AE1C;
+    border-radius: 2px;
+    display: inline-block;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.checkboxInput:checked~.checkmark {
+    background-color: #00AE1C;
+    border-color: #00AE1C;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 3px;
+    top: 1px;
+    width: 3px;
+    height: 5px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.checkboxInput:checked~.checkmark:after {
+    display: block;
+}
+
+.labelCheckbox:hover .checkmark {
+    border-color: #00AE1C;
 }
 
 .repeat {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
     position: relative;
     font-size: 15px;
     color: #323749;
     cursor: pointer;
     padding-bottom: 4px;
     border-bottom: 1px solid #737373;
-    display: inline-flex;
-    align-items: center;
     gap: 6px;
     max-width: 220px;
-    padding-top: 5px;
     margin-left: 10px;
 }
 
@@ -192,7 +250,6 @@
     border-radius: 8px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
     z-index: 40;
-
 }
 
 .repeatOption {
@@ -213,30 +270,36 @@
 
 .containerCalendar {
     display: flex;
+    flex-direction: column;
+    padding-left: 35px;
+    position: relative;
     margin-top: 20px;
-
 }
 
 .labelCalendar {
     font-size: 10px;
     font-weight: 700;
-    position: relative;
-    bottom: 15px;
-    left: 39px;
+    margin-bottom: 5px;
 }
 
 .imgCalendar {
     position: absolute;
-    left: 20px;
+    left: 5px;
+    bottom: 8px;
     height: 14px;
     width: 14px;
+}
 
+.calendarSelect {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .containerDescript {
     display: flex;
     flex-direction: column;
-    margin-left: 40px;
+    padding-left: 35px;
     position: relative;
     margin-top: 30px;
 }
@@ -244,34 +307,30 @@
 .labelDescript {
     font-size: 10px;
     font-weight: 700;
-    position: relative;
-    bottom: 5px;
+    margin-bottom: 5px;
 }
 
 .txtDescript {
     border: none;
     border-bottom: 1px solid #737373;
     outline: none;
-    max-width: 440px;
+    width: 450px;
     height: 25px;
-    max-height: 25px;
 }
 
 .imgDescript {
     height: 12px;
     width: 12px;
     position: absolute;
-    left: -35px;
-    margin-top: 12px;
+    left: 5px;
+    bottom: 8px;
 }
 
 .footer {
     display: flex;
     justify-content: end;
-    align-items: flex-end;
-    margin-top: 25px;
+    margin-top: 15px;
     margin-right: 10px;
-    position: relative;
 }
 
 .btnSave {
@@ -286,12 +345,12 @@
 }
 
 .btnSave:hover {
-    background-color: #00AE1C;
-    border: 1px solid #5CE171;
+    background-color: #008f17;
 }
 
-.btnSave:active {
-    border: 1px solid #5CE171;
-    background-color: #0CD52B;
-
+.colorCircle {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
 }

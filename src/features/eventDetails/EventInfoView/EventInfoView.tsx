@@ -13,9 +13,10 @@ interface Props {
     onEdit: () => void;
     onDelete: () => void;
     onClose: () => void;
+    className?: string;
 }
 
-export const EventInfoView = ({ onEdit, onDelete, onClose }: Props) => {
+export const EventInfoView = ({ onEdit, onDelete, onClose, className }: Props) => {
     const event = useEventStore((s) => s.selectedEvent);
     const calendars = useCalendarStore((s) => s.calendars);
 
@@ -26,9 +27,9 @@ export const EventInfoView = ({ onEdit, onDelete, onClose }: Props) => {
     const calendarName = currentCalendar?.title || `Calendar ${event.calendarId}`;
 
     return (
-        <div className={styles.container}>
+        <div className={`${styles.container} ${className || ''}`}>
             <header className={styles.header}>
-                <h3 className={styles.title}>Event information</h3>
+                <h3 className={styles.titleHeader}>Event information</h3>
                 <div className={styles.actions}>
                     <button onClick={onEdit} className={styles.editBtn} title="Edit">
                         <span className={styles.btnIcon}><img src={editBtn} alt="Edit" /></span>
@@ -43,12 +44,18 @@ export const EventInfoView = ({ onEdit, onDelete, onClose }: Props) => {
                     </button>
                 </div>
             </header>
+
             <div className={styles.content}>
-                <h2 className={styles.title}><img src={titleIcn} alt="Title" />{event.title}</h2>
+                <h2 className={styles.title}>
+                    <img src={titleIcn} alt="Title" className={styles.iconTitle} />
+                    {event.title}
+                </h2>
 
                 <div className={styles.row}>
-                    <span className={styles.icon}><img src={infoIcn} alt="Info" /></span>
-                    <div>
+                    <span className={styles.iconInfo}>
+                        <img src={infoIcn} alt="Info" className={styles.infoIcon} />
+                    </span>
+                    <div className={styles.info}>
                         <p>
                             {event.date.toLocaleDateString('en-US', {
                                 weekday: 'long',
@@ -60,7 +67,9 @@ export const EventInfoView = ({ onEdit, onDelete, onClose }: Props) => {
                 </div>
 
                 <div className={styles.row}>
-                    <span className={styles.icon}><img src={calendarIcn} alt="Calendar" /></span>
+                    <span className={styles.icon}>
+                        <img src={calendarIcn} alt="Calendar" className={styles.calendarIcon} />
+                    </span>
                     <div className={styles.calendarTag}>
                         <span
                             className={styles.colorCircle}
@@ -72,8 +81,10 @@ export const EventInfoView = ({ onEdit, onDelete, onClose }: Props) => {
 
                 {event.description && (
                     <div className={styles.row}>
-                        <span className={styles.icon}><img src={descrIcn} alt="Description" /></span>
-                        <p>{event.description}</p>
+                        <span className={styles.iconDescription}>
+                            <img src={descrIcn} alt="Description" />
+                        </span>
+                        <p className={styles.description}>{event.description}</p>
                     </div>
                 )}
             </div>

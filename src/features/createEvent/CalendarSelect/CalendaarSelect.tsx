@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import styles from './CalendarSelect.module.scss';
 import type { CalendarSelectProps } from './CalendarSelect.types';
 
@@ -7,11 +7,21 @@ export const CalendarSelect = ({
   options,
   onChange,
 }: CalendarSelectProps) => {
-
   const [open, setOpen] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   return (
-    <div className={styles.wrapper}>
+    <div className={styles.wrapper} ref={wrapperRef}>
       <div
         className={styles.select}
         onClick={(e) => {
@@ -27,7 +37,7 @@ export const CalendarSelect = ({
           <span className={styles.title}>{value.title}</span>
         </div>
 
-        <span className="material-symbols-outlined">
+        <span className={`material-symbols-outlined ${open ? styles.rotate : ''}`}>
           keyboard_arrow_down
         </span>
       </div>

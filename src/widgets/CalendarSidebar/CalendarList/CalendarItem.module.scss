@@ -1,22 +1,97 @@
-.item{
+.list {
     display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    text-align: center;
-    height: 32px;
-    padding: 4px 8px;
+    flex-direction: column;
+    width: 250px;
+    height: 204px;
+    padding: 12px 8px;
+    margin: 32px 30px;
+    background-color: white;
+    box-shadow: 0px 4px 4px 0px #0000001A;
     border-radius: 8px;
 }
 
-.item:hover{
-    background-color: #F5F5F5;
-    cursor: pointer;
-    
+.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-left: 5px;
+    align-items: center;
 }
 
-.name{
+.title {
     font-family: 'Inter', sans-serif;
-    font-size: 13px;
-    font-weight: 400;
-    padding-left: 5px;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.add {
+    cursor: pointer;
+    border: none;
+    background: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.add span {
+    font-size: 20px;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: #f1f3f4;
+
+        .actions {
+            opacity: 1;
+            visibility: visible;
+        }
+    }
+}
+
+.name {
+    flex: 1;
+    font-size: 14px;
+    margin-left: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.actions {
+    display: flex;
+    gap: 4px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s;
+}
+
+.editBtn,
+.deleteBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    border-radius: 4px;
+
+    &:hover {
+        background-color: #e8eaed;
+    }
+}
+
+.modal {
+    width: 520px;
+    height: 180px;
+    background-color: white;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 4px 0px #0000001A;
 }

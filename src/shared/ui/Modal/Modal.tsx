@@ -17,15 +17,15 @@ export const Modal: React.FC<ModalProps> = ({
                 className={`${styles.modalContent} ${className ?? ''}`}
                 onClick={(e) => e.stopPropagation()}
             >
-                <div className={styles.header}>
-                    {/* <button
+                {/* <div className={styles.header}>
+                    <button
                         onClick={onClose}
                         className={styles.closeButton}
                         aria-label="Close modal"
                     >
                         <img src={closeBtn} alt="" className={styles.closeIcon} />
-                    </button> */}
-                </div>
+                    </button>
+                </div> */}
 
                 {children}
             </div>
