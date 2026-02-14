@@ -1,15 +1,15 @@
-.sidebar{
+.sidebar {
     position: relative;
 }
 
-.createButton{
+.createButton {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 5px;
-    margin: 32px 40px;
+    margin: 32px 33px;
     height: 40px;
-    width: 240px;
+    width: 250px;
     background-color: #00AE1C;
     color: white;
     border: none;
@@ -18,4 +18,13 @@
     box-shadow: 0px 1px 2px 0px #1018280D;
     font-family: 'Roboto', sans-serif;
     font-size: 15px;
+
+    &:hover {
+        border: 1px solid #5CE171;
+    }
+
+    &:active {
+        background: #0CD52B;
+        border: 1px solid #5CE171
+    }
 }

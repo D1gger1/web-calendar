@@ -342,10 +342,15 @@
     color: white;
     cursor: pointer;
 
-}
+    &:hover {
+        border: 1px solid #5CE171;
+    }
 
-.btnSave:hover {
-    background-color: #008f17;
+    &:active {
+        background: #0CD52B;
+        border: 1px solid #5CE171
+    }
+
 }
 
 .colorCircle {

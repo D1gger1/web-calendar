@@ -46,19 +46,29 @@
   cursor: pointer;
 
   &:hover {
-    background: #f8fafc;
+    border: 1px solid #DEDFE5
+  }
+
+  &:active{
+    background: #E0E0E0;
+    border: 1px solid #DEDFE5;
   }
 }
 
 .deleteBtn {
   padding: 8px 16px;
   border-radius: 6px;
-  border: none;
+  border: 1px solid #e2e8f0;
   background: #00AE1C;
   color: white;
   cursor: pointer;
 
   &:hover {
-    background: #016e13c4;
+    border: 1px solid #5CE171;
+  }
+
+  &:active {
+    background: #0CD52B;
+    border: 1px solid #5CE171
   }
 }

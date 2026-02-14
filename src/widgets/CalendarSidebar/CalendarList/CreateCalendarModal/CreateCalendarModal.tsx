@@ -6,6 +6,7 @@ import { useNotificationStore } from '../../../../entities/notification/notifica
 import styles from './CreateCalendarModal.module.scss';
 import imgColorPicker from '../../../../assets/ColorPicker.svg';
 import imgTitle from '../../../../assets/title.png';
+import closeBtn from '../../../../assets/closeBtn.svg';
 
 type Props = {
   isOpen: boolean;
@@ -60,9 +61,13 @@ export const CreateCalendarModal = ({ isOpen, onClose, editData }: Props) => {
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} className={styles.wrapper}>
-      <h2 className={styles.header}>
-        {editData ? 'Edit calendar' : 'Create calendar'}
-      </h2>
+      <div className={styles.headerContainer}>
+        <h2 className={styles.header}>
+          {editData ? 'Edit calendar' : 'Create calendar'}
+        </h2>
+        <img src={closeBtn} alt="Close" className={styles.closeBtn} onClick={onClose}/>
+      </div>
+
 
       <div className={styles.containerTitle}>
         <label className={styles.labelTitle}>Title</label>

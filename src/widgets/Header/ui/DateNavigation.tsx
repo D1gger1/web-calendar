@@ -3,7 +3,7 @@ import { Button } from "../../../shared/ui/Button/Button"
 import { useCalendarStore } from "../../../entities/calendar/model/calendarStore"
 
 export const DateNavigation = () => {
-    // Достаем setCurrentDate (вместо старого setDate)
+
     const { currentDate, nextDay, prevDay, setCurrentDate } = useCalendarStore();
 
     const formattedDate = currentDate.toLocaleDateString('en-US', {
@@ -14,10 +14,9 @@ export const DateNavigation = () => {
 
     return (
         <div className={styles.dateNav}>
-            {/* ИСПРАВЛЕНИЕ: вызываем setCurrentDate и передаем НОВЫЙ объект даты */}
-            <Button 
-                label='' 
-                onClick={() => setCurrentDate(new Date())} 
+            <Button
+                label=''
+                onClick={() => setCurrentDate(new Date())}
                 className={styles.btnToday}
             >
                 Today

@@ -40,7 +40,8 @@
 .item {
     display: flex;
     align-items: center;
-    padding: 10px 12px;
+    justify-content: space-between;
+    padding: 5px 6px;
     cursor: pointer;
     border-radius: 4px;
     transition: background-color 0.2s;
@@ -53,6 +54,44 @@
             visibility: visible;
         }
     }
+}
+
+.checkboxWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.realCheckbox {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.customCheckmark {
+    width: 14px;
+    height: 14px;
+    border: 2px solid;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.tick {
+    width: 4px;
+    height: 8px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    margin-bottom: 2px;
 }
 
 .name {

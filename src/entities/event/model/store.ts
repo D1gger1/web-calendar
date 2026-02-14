@@ -8,7 +8,6 @@ export interface CalendarCategory {
     visible: boolean;
 }
 
-// 1. Обязательно добавляем типы в интерфейс
 export interface CalendarState {
     calendars: CalendarCategory[];
     currentDate: Date; 
@@ -16,7 +15,7 @@ export interface CalendarState {
     toggleVisibility: (id: string) => void;
     deleteCalendar: (id: string) => void;
     updateCalendar: (id: string, title: string, color: string) => void;
-    setCurrentDate: (date: Date) => void; // <--- Проверь эту строку
+    setCurrentDate: (date: Date) => void; 
 }
 
 export const useCalendarStore = create<CalendarState>()(
@@ -25,7 +24,6 @@ export const useCalendarStore = create<CalendarState>()(
             calendars: [],
             currentDate: new Date(),
 
-            // 2. Реализация метода
             setCurrentDate: (date) => set({ currentDate: date }),
 
             addCalendar: (title, color) =>
@@ -57,7 +55,7 @@ export const useCalendarStore = create<CalendarState>()(
         }),
         {
             name: 'calendar-storage',
-            // Превращаем строку из localStorage обратно в объект Date при загрузке
+
             onRehydrateStorage: () => (state) => {
                 if (state && state.currentDate) {
                     state.currentDate = new Date(state.currentDate);

@@ -29,20 +29,28 @@ export const CalendarItem = ({ calendar }: CalendarItemProps) => {
   return (
     <>
       <div className={styles.item}>
-        <input
-          type="checkbox"
-          className={styles.checkbox}
-          checked={calendar.visible}
-          onChange={() => toggleVisibility(calendar.id)}
-          style={{ accentColor: calendar.color }}
-        />
+        <div className={styles.item}>
+          <label className={styles.checkboxWrapper}>
+            <input
+              type="checkbox"
+              className={styles.realCheckbox}
+              checked={calendar.visible}
+              onChange={() => toggleVisibility(calendar.id)}
+            />
+            <span
+              className={styles.customCheckmark}
+              style={{
+                backgroundColor: calendar.visible ? calendar.color : 'transparent',
+                borderColor: calendar.color
+              }}
+            >
+              {calendar.visible && <div className={styles.tick} />}
+            </span>
+          </label>
 
-        <span
-          className={styles.colorCircle}
-          style={{ backgroundColor: calendar.color }}
-        />
 
-        <span className={styles.name}>{calendar.title}</span>
+          <span className={styles.name}>{calendar.title}</span>
+        </div>
 
         <div className={styles.actions}>
           <button

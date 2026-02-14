@@ -45,6 +45,15 @@
     margin-left: 16px;
     font-size: 15px;
     cursor: pointer;
+
+    &:hover {
+        border: 1px solid #5CE171;
+    }
+
+    &:active {
+        background: #0CD52B;
+        border: 1px solid #5CE171
+    }
 }
 
 .btnPrev{
@@ -68,6 +77,15 @@
     cursor: pointer;
     width: 36px;
     height: 36px;
+
+    &:hover {
+        border: 1px solid #dedfe577;
+    }
+
+    &:active {
+        background: #dedfe577;
+    }
+
 }
 
 .date{

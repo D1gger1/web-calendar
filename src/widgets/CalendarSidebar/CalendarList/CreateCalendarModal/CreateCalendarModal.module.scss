@@ -11,7 +11,22 @@
     top: 0;
     border-bottom: 1px solid #DEDFE5;
     width: 89%;
-    padding-bottom: 5px;
+    padding-bottom: 10px;
+}
+
+.headerContainer{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    
+}
+
+.closeBtn{
+    margin-left: auto;
+    cursor: pointer;
+    position: relative;
+    top: 13px;
+    right: 12px;
 }
 
 .containerTitle {
