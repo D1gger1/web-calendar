@@ -188,6 +188,9 @@ export const CreateEventModal = ({ isEditMode = false, onClose, className }: Cre
 
         <div ref={repeatRef} className={styles.repeat} onClick={() => setIsRepeatOpen(!isRepeatOpen)}>
           {repeatOptions.find((o) => o.value === repeat)?.label}
+          <span className={`material-symbols-outlined ${isRepeatOpen ? styles.rotate : ''}`}>
+            keyboard_arrow_down
+          </span>
           {isRepeatOpen && (
             <div className={styles.repeatMenu}>
               {repeatOptions.map((option) => (
@@ -200,7 +203,9 @@ export const CreateEventModal = ({ isEditMode = false, onClose, className }: Cre
                     setIsRepeatOpen(false);
                   }}
                 >
+
                   {option.label}
+
                 </div>
               ))}
             </div>
