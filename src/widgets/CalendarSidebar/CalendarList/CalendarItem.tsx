@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { Modal } from '../../../shared/ui/Modal/Modal';
-import styles from './CalendarItem.module.scss';
+import { useEventStore } from '../../../entities/event/model/eventStore';
 import { useCalendarStore, type CalendarCategory } from '../../../entities/calendar/model/calendarStore';
 import { useNotificationStore } from '../../../entities/notification/notificationStore';
 import { DeleteConfirmModal } from '../../../features/eventDetails/DeletConfirmModal/DeleteConfirmModal';
 import { CreateCalendarModal } from './CreateCalendarModal/CreateCalendarModal';
 import deleteIcon from '../../../assets/dltIcn.svg';
 import editIcon from '../../../assets/editIcon.svg';
+import styles from './CalendarItem.module.scss';
 
 interface CalendarItemProps {
   calendar: CalendarCategory;
@@ -18,9 +19,11 @@ export const CalendarItem = ({ calendar }: CalendarItemProps) => {
 
   const toggleVisibility = useCalendarStore((state) => state.toggleVisibility);
   const deleteCalendar = useCalendarStore((state) => state.deleteCalendar);
+  const deleteEventsByCalendar = useEventStore((state) => state.deleteEventsByCalendarId);
   const showNotification = useNotificationStore((state) => state.showNotification);
 
   const handleDelete = () => {
+    deleteEventsByCalendar(calendar.id);
     deleteCalendar(calendar.id);
     showNotification('Calendar deleted');
     setIsDeleteModalOpen(false);

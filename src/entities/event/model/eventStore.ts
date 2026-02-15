@@ -80,6 +80,7 @@ type EventState = {
         event: Omit<CalendarEvent, 'id' | 'createdAt'>
     ) => CreateEventResult;
     deleteEvent: (id: string) => void;
+    deleteEventsByCalendarId: (calendarId: string) => void;
 };
 
 export const useEventStore = create<EventState>((set, get) => ({
@@ -158,6 +159,15 @@ export const useEventStore = create<EventState>((set, get) => ({
             return {
                 events: updatedEvents,
                 selectedEvent: null,
+            };
+        }),
+
+    deleteEventsByCalendarId: (calendarId) =>
+        set((state) => {
+            const updatedEvents = state.events.filter((e) => String(e.calendarId) !== String(calendarId));
+            saveEvents(updatedEvents);
+            return {
+                events: updatedEvents,
             };
         }),
 }));
