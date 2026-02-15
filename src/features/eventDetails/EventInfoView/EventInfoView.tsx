@@ -74,11 +74,10 @@ export const EventInfoView = ({ onEdit, onDelete, onClose, className }: Props) =
                                 month: 'long',
                                 day: 'numeric'
                             })}
-                        </p>
-                        <p className={styles.timeDetails}>
+
                             {event.allDay
-                                ? 'All day'
-                                : `${event.startTime} - ${event.endTime}`
+                                ? ', All day'
+                                : `, ${event.startTime} - ${event.endTime}`
                             }
                             {`, ${getRepeatLabel(event.repeat, event.date)}`}
                         </p>

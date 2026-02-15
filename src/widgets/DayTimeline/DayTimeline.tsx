@@ -19,31 +19,44 @@ export const DayTimeline = () => {
     return parentCal ? parentCal.visible : true;
   });
 
-  const layoutEvents = calculateEventLayout(visibleEvents);
+  const allDayEvents = visibleEvents.filter(e => e.allDay);
+  const timedEvents = visibleEvents.filter(e => !e.allDay);
+
+  const layoutEvents = calculateEventLayout(timedEvents);
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
         <DayHeader date={currentDate} />
+        {allDayEvents.length > 0 && (
+          <div className={styles.allDayContainer}>
+            {allDayEvents.map((event) => {
+              const targetCal = calendars.find(c => String(c.id) === String(event.calendarId));
+              return (
+                <EventBlock
+                  key={event.id}
+                  event={event}
+                  calendarColor={targetCal?.color || '#CBD5E1'}
+                />
+              );
+            })}
+          </div>
+        )}
       </div>
 
       <div className={styles.scroll}>
         <TimeColumn />
-
         <div className={styles.timeline}>
           <TimelineGrid />
-
           {layoutEvents.map((event) => {
-            const targetCal = calendars.find(c => String(c.id) === String(event.calendarId));
-            const dynamicColor = targetCal ? targetCal.color : '#CBD5E1';
-
-            return (
-              <EventBlock
-                key={event.id}
-                event={event}
-                calendarColor={dynamicColor}
-              />
-            );
+             const targetCal = calendars.find(c => String(c.id) === String(event.calendarId));
+             return (
+               <EventBlock
+                 key={event.id}
+                 event={event}
+                 calendarColor={targetCal?.color || '#CBD5E1'}
+               />
+             );
           })}
         </div>
         <EventDetailsModal />

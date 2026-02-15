@@ -21,6 +21,13 @@
   z-index: 10;
 }
 
+.allDayContainer {
+  position: absolute;
+  width: 1625px;
+  padding: 0 85px;
+  margin-top: 50px;
+}
+
 .scroll {
   display: flex;
   flex: 1;
