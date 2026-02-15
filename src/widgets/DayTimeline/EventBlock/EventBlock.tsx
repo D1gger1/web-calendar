@@ -1,7 +1,7 @@
 import styles from './EventBlock.module.scss';
 import type { CalendarEvent } from '../../../entities/event/model/types';
 import { timeToMinutes } from '../../../shared/lib/time';
-import { HOUR_HEIGHT, START_HOUR } from '../constants';
+import { HOUR_HEIGHT, START_HOUR, HOURS_IN_VIEW } from '../constants';
 import { useEventStore } from '../../../entities/event/model/eventStore';
 
 type Props = {
@@ -19,24 +19,25 @@ export const EventBlock = ({ event, calendarColor }: Props) => {
     return null;
   }
 
-  const duration = event.allDay
-    ? 60 
-    : timeToMinutes(event.endTime) - timeToMinutes(event.startTime);
-
-  const isShort = !event.allDay && duration <= 30;
-
   const rawStart = event.allDay ? 0 : timeToMinutes(event.startTime) - START_MINUTES;
   const rawEnd = event.allDay ? 60 : timeToMinutes(event.endTime) - START_MINUTES;
 
   const start = Math.max(rawStart, 0);
   const end = Math.min(rawEnd, 24 * 60);
 
-  const top = (start * PIXELS_PER_MINUTE) + HOUR_HEIGHT;
-  const height = Math.max((end - start) * PIXELS_PER_MINUTE, 22);
+  const top = event.allDay
+    ? HOUR_HEIGHT
+    : (start * PIXELS_PER_MINUTE) + HOUR_HEIGHT;
+
+  const height = event.allDay
+    ? (HOURS_IN_VIEW * HOUR_HEIGHT)
+    : Math.max((end - start) * PIXELS_PER_MINUTE, 22);
+
+  const isShort = !event.allDay && (end - start) <= 30;
 
   return (
     <div
-      className={`${styles.event} ${isShort ? styles.short : ''}`}
+      className={`${styles.event} ${isShort ? styles.short : ''} ${event.allDay ? styles.allDay : ''}`}
       style={{
         top: `${top}px`,
         height: `${height}px`,

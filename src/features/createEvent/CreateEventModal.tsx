@@ -21,6 +21,7 @@ interface CreateEventModalProps {
 
 export const CreateEventModal = ({ isEditMode = false, onClose, className }: CreateEventModalProps) => {
   const { calendars } = useCalendarStore();
+  const { events } = useEventStore();
   const createEvent = useEventStore((s) => s.createEvent);
   const updateEvent = useEventStore((s) => s.updateEvent);
   const selectedEvent = useEventStore((s) => s.selectedEvent);
@@ -95,6 +96,20 @@ export const CreateEventModal = ({ isEditMode = false, onClose, className }: Cre
       titleInputRef.current?.focus();
       return;
     }
+
+    if (allDay) {
+      const hasAllDayEvent = events.some(e =>
+        e.allDay &&
+        new Date(e.date).toDateString() === date.toDateString() &&
+        (isEditMode ? e.id !== selectedEvent?.id : true)
+      );
+
+      if (hasAllDayEvent) {
+        setSaveError('An "All day" event already exists for this day');
+        return;
+      }
+    }
+
     if (!allDay && timeToMinutes(endTime) <= timeToMinutes(startTime)) {
       setTimeError('End time must be later than start time');
       return;

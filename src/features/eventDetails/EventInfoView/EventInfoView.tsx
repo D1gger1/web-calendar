@@ -26,6 +26,20 @@ export const EventInfoView = ({ onEdit, onDelete, onClose, className }: Props) =
     const calendarColor = currentCalendar?.color || '#CBD5E1';
     const calendarName = currentCalendar?.title || `Calendar ${event.calendarId}`;
 
+    const getRepeatLabel = (repeatValue: string, date: Date) => {
+        if (repeatValue === 'none' || !repeatValue) return 'Does not repeat';
+        const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+        const monthDay = date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+
+        switch (repeatValue) {
+            case 'daily': return 'Daily';
+            case 'weekly': return `Weekly on ${dayName}`;
+            case 'monthly': return 'Monthly';
+            case 'annually': return `Annually on ${monthDay}`;
+            default: return 'Does not repeat';
+        }
+    };
+
     return (
         <div className={`${styles.container} ${className || ''}`}>
             <header className={styles.header}>
@@ -34,11 +48,9 @@ export const EventInfoView = ({ onEdit, onDelete, onClose, className }: Props) =
                     <button onClick={onEdit} className={styles.editBtn} title="Edit">
                         <span className={styles.btnIcon}><img src={editBtn} alt="Edit" /></span>
                     </button>
-
                     <button onClick={onDelete} className={styles.deleteBtn} title="Delete">
                         <span className={styles.btnIcon}><img src={deleteBtn} alt="Delete" /></span>
                     </button>
-
                     <button onClick={onClose} className={styles.closeBtn} title="Close">
                         <span className={styles.btnIcon}><img src={closeBtn} alt="Close" /></span>
                     </button>
@@ -56,12 +68,19 @@ export const EventInfoView = ({ onEdit, onDelete, onClose, className }: Props) =
                         <img src={infoIcn} alt="Info" className={styles.infoIcon} />
                     </span>
                     <div className={styles.info}>
-                        <p>
+                        <p className={styles.dateText}>
                             {event.date.toLocaleDateString('en-US', {
                                 weekday: 'long',
                                 month: 'long',
                                 day: 'numeric'
-                            })}, {event.startTime} - {event.endTime}
+                            })}
+                        </p>
+                        <p className={styles.timeDetails}>
+                            {event.allDay
+                                ? 'All day'
+                                : `${event.startTime} - ${event.endTime}`
+                            }
+                            {`, ${getRepeatLabel(event.repeat, event.date)}`}
                         </p>
                     </div>
                 </div>
