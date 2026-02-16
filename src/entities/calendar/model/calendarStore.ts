@@ -11,11 +11,9 @@ export interface CalendarCategory {
 export interface CalendarState {
     calendars: CalendarCategory[];
     currentDate: Date;
-    // Методы навигации
     setCurrentDate: (date: Date) => void;
     nextDay: () => void;
     prevDay: () => void;
-    // Методы управления категориями
     addCalendar: (title: string, color: string) => void;
     toggleVisibility: (id: string) => void;
     deleteCalendar: (id: string) => void;
@@ -28,10 +26,8 @@ export const useCalendarStore = create<CalendarState>()(
             calendars: [],
             currentDate: new Date(),
 
-            // Установка конкретной даты (из DatePicker)
             setCurrentDate: (date) => set({ currentDate: date }),
 
-            // Переход к следующему дню
             nextDay: () =>
                 set((state) => {
                     const next = new Date(state.currentDate);
@@ -39,7 +35,6 @@ export const useCalendarStore = create<CalendarState>()(
                     return { currentDate: next };
                 }),
 
-            // Переход к предыдущему дню
             prevDay: () =>
                 set((state) => {
                     const prev = new Date(state.currentDate);
@@ -84,7 +79,6 @@ export const useCalendarStore = create<CalendarState>()(
         }),
         {
             name: 'calendar-storage',
-            // Превращаем строку из JSON обратно в объект Date при загрузке страницы
             onRehydrateStorage: () => (state) => {
                 if (state && state.currentDate) {
                     state.currentDate = new Date(state.currentDate);
