@@ -170,7 +170,7 @@ export const CreateEventModal = ({
   if (!calendars.length) {
     return (
       <div className={styles.modal}>
-        <div className={styles.saveError}>
+        <div className={styles.createError}>
           Please create a calendar first
         </div>
       </div>
