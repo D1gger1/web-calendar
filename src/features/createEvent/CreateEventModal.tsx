@@ -6,37 +6,63 @@ import { CalendarSelect } from './CalendarSelect/CalendaarSelect';
 import { useEventStore } from '../../entities/event/model/eventStore';
 import { useCalendarStore } from '../../entities/calendar/model/calendarStore';
 import { timeToMinutes } from '../../shared/lib/time';
+import type { CalendarCategory } from '../../entities/calendar/model/calendarStore';
 
 import imgTitle from '../../assets/title.png';
 import imgDate from '../../assets/Date.png';
 import imgCalendar from '../../assets/calendar.png';
 import imgDescript from '../../assets/description.png';
 import closeBtn from '../../assets/closeBtn.svg';
-
 interface CreateEventModalProps {
   isEditMode?: boolean;
   onClose: () => void;
   className?: string;
 }
 
-export const CreateEventModal = ({ isEditMode = false, onClose, className }: CreateEventModalProps) => {
+export const CreateEventModal = ({
+  isEditMode = false,
+  onClose,
+  className,
+}: CreateEventModalProps) => {
   const { calendars } = useCalendarStore();
   const { events } = useEventStore();
   const createEvent = useEventStore((s) => s.createEvent);
   const updateEvent = useEventStore((s) => s.updateEvent);
   const selectedEvent = useEventStore((s) => s.selectedEvent);
 
-  const [title, setTitle] = useState(isEditMode ? selectedEvent?.title || '' : '');
-  const [date, setDate] = useState(isEditMode ? selectedEvent?.date || new Date() : new Date());
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  const [startTime, setStartTime] = useState(isEditMode ? selectedEvent?.startTime || '10:00 AM' : '10:00 AM');
-  const [endTime, setEndTime] = useState(isEditMode ? selectedEvent?.endTime || '10:30 AM' : '10:30 AM');
-  const [allDay, setAllDay] = useState(isEditMode ? selectedEvent?.allDay || false : false);
-  const [repeat, setRepeat] = useState<string>(isEditMode ? selectedEvent?.repeat || 'none' : 'none');
-  const [isRepeatOpen, setIsRepeatOpen] = useState(false);
-  const [description, setDescription] = useState(isEditMode ? selectedEvent?.description || '' : '');
+  const [title, setTitle] = useState(
+    isEditMode ? selectedEvent?.title || '' : ''
+  );
 
-  const [calendar, setCalendar] = useState(
+  const [date, setDate] = useState(
+    isEditMode ? selectedEvent?.date || new Date() : new Date()
+  );
+
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+
+  const [startTime, setStartTime] = useState(
+    isEditMode ? selectedEvent?.startTime || '10:00 AM' : '10:00 AM'
+  );
+
+  const [endTime, setEndTime] = useState(
+    isEditMode ? selectedEvent?.endTime || '10:30 AM' : '10:30 AM'
+  );
+
+  const [allDay, setAllDay] = useState(
+    isEditMode ? selectedEvent?.allDay || false : false
+  );
+
+  const [repeat, setRepeat] = useState<string>(
+    isEditMode ? selectedEvent?.repeat || 'none' : 'none'
+  );
+
+  const [isRepeatOpen, setIsRepeatOpen] = useState(false);
+
+  const [description, setDescription] = useState(
+    isEditMode ? selectedEvent?.description || '' : ''
+  );
+
+  const [calendar, setCalendar] = useState<CalendarCategory>(
     isEditMode && selectedEvent
       ? calendars.find(c => String(c.id) === String(selectedEvent.calendarId)) || calendars[0]
       : calendars[0]
@@ -48,6 +74,12 @@ export const CreateEventModal = ({ isEditMode = false, onClose, className }: Cre
 
   const repeatRef = useRef<HTMLDivElement | null>(null);
   const titleInputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (!calendar && calendars.length) {
+      setCalendar(calendars[0]);
+    }
+  }, [calendars, calendar]);
 
   const getRepeatOptions = (selectedDate: Date) => {
     const dayName = selectedDate.toLocaleDateString('en-US', { weekday: 'long' });
@@ -126,13 +158,24 @@ export const CreateEventModal = ({ isEditMode = false, onClose, className }: Cre
       description,
     };
 
-    const result = isEditMode && selectedEvent
-      ? updateEvent(selectedEvent.id, eventData)
-      : createEvent(eventData);
+    const result =
+      isEditMode && selectedEvent
+        ? updateEvent(selectedEvent.id, eventData)
+        : createEvent(eventData);
 
     if (result.ok) onClose();
     else setSaveError(result.error);
   };
+
+  if (!calendars.length) {
+    return (
+      <div className={styles.modal}>
+        <div className={styles.saveError}>
+          Please create a calendar first
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={`${styles.modal} ${className || ''}`} onKeyDown={(e) => e.key === 'Enter' && handleSave()}>
@@ -140,6 +183,12 @@ export const CreateEventModal = ({ isEditMode = false, onClose, className }: Cre
         <h2 className={styles.title}>{isEditMode ? 'Edit event' : 'Create event'}</h2>
         <img src={closeBtn} alt="Close" onClick={onClose} className={styles.closeBtn} />
       </div>
+
+      {!calendars.length && (
+        <div className={styles.saveError}>
+          Please create a calendar first
+        </div>
+      )}
 
       <div className={styles.containerTitle}>
         <label className={styles.labelTitle}>Title</label>
@@ -203,9 +252,7 @@ export const CreateEventModal = ({ isEditMode = false, onClose, className }: Cre
                     setIsRepeatOpen(false);
                   }}
                 >
-
                   {option.label}
-
                 </div>
               ))}
             </div>
@@ -219,7 +266,11 @@ export const CreateEventModal = ({ isEditMode = false, onClose, className }: Cre
         <CalendarSelect
           value={calendar}
           options={calendars}
-          onChange={(opt) => setCalendar(calendars.find(c => String(c.id) === String(opt.id)) || calendars[0])}
+          onChange={(opt) =>
+            setCalendar(
+              calendars.find((c) => String(c.id) === String(opt.id)) || calendars[0]
+            )
+          }
         />
       </div>
 
