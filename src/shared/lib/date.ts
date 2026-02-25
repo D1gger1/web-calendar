@@ -36,3 +36,11 @@ export const getEventsForDate = (events: CalendarEvent[], targetDate: Date) => {
         }
     });
 };
+
+export const formatDateFull = (date: Date): string => {
+    return date.toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+    });
+};

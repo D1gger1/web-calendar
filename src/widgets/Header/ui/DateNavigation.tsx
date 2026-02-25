@@ -1,16 +1,12 @@
-import styles from "../Header.module.scss"
-import { Button } from "../../../shared/ui/Button/Button"
-import { useCalendarStore } from "../../../entities/calendar/model/calendarStore"
+import styles from "../Header.module.scss";
+import { Button } from "../../../shared/ui/Button/Button";
+import { useCalendarStore } from "../../../entities/calendar/model/calendarStore";
+import { formatDateFull } from "../../../shared/lib/date";
 
 export const DateNavigation = () => {
-
     const { currentDate, nextDay, prevDay, setCurrentDate } = useCalendarStore();
 
-    const formattedDate = currentDate.toLocaleDateString('en-US', {
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric',
-    });
+    const formattedDate = formatDateFull(currentDate);
 
     return (
         <div className={styles.dateNav}>
@@ -36,5 +32,5 @@ export const DateNavigation = () => {
 
             <span className={styles.date}>{formattedDate}</span>
         </div>
-    )
-}
+    );
+};
