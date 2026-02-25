@@ -26,8 +26,8 @@
 *(Add your awesome screenshots here)*
 
 | Day View | Calendar Creation | Event Creation |
-| ![alt text](image-1.png)| ![alt text](image-2.png) |![alt text](image-3.png)|
-| <img src="https://via.placeholder.com/400x250/f0f0f0/999999?text=Month+View" alt="Month View" width="100%"/> | <img src="https://via.placeholder.com/400x250/f0f0f0/999999?text=Day+View" alt="Day View" width="100%"/> | <img src="https://via.placeholder.com/400x250/f0f0f0/999999?text=Event+Modal" alt="Event Modal" width="100%"/> |
+| :---: | :---: | :---: |
+| <img src=![alt text](image.png)" alt="Day View" width="100%"/> | <img src="![alt text](image-1.png)" alt="Calendar Create" width="100%"/> | <img src="![alt text](image-2.png)" alt="Event Modal" width="100%"/> |
 
 
 ## � Quick Start
