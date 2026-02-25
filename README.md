@@ -23,11 +23,10 @@
 
 ## 📸 Screenshots
 
-*(Add your awesome screenshots here)*
 
 | Day View | Calendar Creation | Event Creation |
 | :---: | :---: | :---: |
-| <img src=![alt text](image.png)" alt="Day View" width="100%"/> | <img src="![alt text](image-1.png)" alt="Calendar Create" width="100%"/> | <img src="![alt text](image-2.png)" alt="Event Modal" width="100%"/> |
+| ![Day View](image.png) | ![Calendar Create](image-1.png) | ![Event Modal](image-2.png) |
 
 
 ## � Quick Start
