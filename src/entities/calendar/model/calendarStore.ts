@@ -1,14 +1,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import type { CalendarCategory } from '../../event/model/types'; 
 
-export interface CalendarCategory {
-    id: string;
-    title: string;
-    color: string;
-    visible: boolean;
-}
-
-export interface CalendarState {
+interface CalendarState {
     calendars: CalendarCategory[];
     currentDate: Date;
     setCurrentDate: (date: Date) => void;
@@ -19,7 +13,6 @@ export interface CalendarState {
     deleteCalendar: (id: string) => void;
     updateCalendar: (id: string, title: string, color: string) => void;
 }
-
 export const useCalendarStore = create<CalendarState>()(
     persist(
         (set) => ({

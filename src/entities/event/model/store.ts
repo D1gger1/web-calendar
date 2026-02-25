@@ -1,21 +1,14 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-
-export interface CalendarCategory {
-    id: string;
-    title: string;
-    color: string;
-    visible: boolean;
-}
-
+import type { CalendarCategory } from '../../event/model/types';
 export interface CalendarState {
     calendars: CalendarCategory[];
-    currentDate: Date; 
+    currentDate: Date;
     addCalendar: (title: string, color: string) => void;
     toggleVisibility: (id: string) => void;
     deleteCalendar: (id: string) => void;
     updateCalendar: (id: string, title: string, color: string) => void;
-    setCurrentDate: (date: Date) => void; 
+    setCurrentDate: (date: Date) => void;
 }
 
 export const useCalendarStore = create<CalendarState>()(
@@ -33,7 +26,7 @@ export const useCalendarStore = create<CalendarState>()(
                         { id: crypto.randomUUID(), title, color, visible: true },
                     ],
                 })),
-            
+
             toggleVisibility: (id) =>
                 set((state) => ({
                     calendars: state.calendars.map((c) =>
