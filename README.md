@@ -1,73 +1,92 @@
-# React + TypeScript + Vite
+  # 🗓️ Web Calendar
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+  **A modern, intuitive, and feature-rich calendar application.**
 
-Currently, two official plugins are available:
+  [![React](https://img.shields.io/badge/React-19.2.0-blue?logo=react&logoColor=white)](https://react.dev/)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+  [![Vite](https://img.shields.io/badge/Vite-7.2-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
+  [![Zustand](https://img.shields.io/badge/Zustand-5.0-brown?logo=pmndrs&logoColor=white)](https://github.com/pmndrs/zustand)
+  [![Sass](https://img.shields.io/badge/Sass-1.97-CC6699?logo=sass&logoColor=white)](https://sass-lang.com/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+  [Features](#features) • [Installation](#installation) • [Usage](#usage) • [Architecture](#architecture) • [Contributing](#contributing)
+</div>
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## ✨ Features
 
-## Expanding the ESLint configuration
+- **Intuitive Interface**: Clean, modern design focused on usability and speed.
+- **Responsive Design**: Works seamlessly across desktop, tablet, and mobile devices.
+- **Event Management**: Easily create, edit, move, and delete calendar events.
+- **Light/Dark Mode**: Built-in theme support for comfortable viewing at any time of day.
+- **State of the Art Architecture**: Built using Feature-Sliced Design (FSD) for maximum scalability and code organization.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 📸 Screenshots
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+*(Add your awesome screenshots here)*
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+| Month View | Day View | Event Creation |
+| :---: | :---: | :---: |
+| <img src="https://via.placeholder.com/400x250/f0f0f0/999999?text=Month+View" alt="Month View" width="100%"/> | <img src="https://via.placeholder.com/400x250/f0f0f0/999999?text=Day+View" alt="Day View" width="100%"/> | <img src="https://via.placeholder.com/400x250/f0f0f0/999999?text=Event+Modal" alt="Event Modal" width="100%"/> |
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+
+## � Quick Start
+
+### Prerequisites
+
+Make sure you have [Node.js](https://nodejs.org/) (v18+) installed on your machine.
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/web-calendar.git
+   cd web-calendar
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+4. Open `http://localhost:5173` in your browser.
+
+## 🏗️ Architecture
+
+This project strictly follows the [Feature-Sliced Design (FSD)](https://feature-sliced.design/) architectural methodology to ensure the codebase remains maintainable as the application scales.
+
+<details>
+<summary><b>Click to expand project structure</b></summary>
+
+```text
+src/
+├── app/          # App setup, global styles, providers
+├── pages/        # Composition of features/widgets into full routes
+├── widgets/      # Independent, reusable UI blocks (e.g., Header, CalendarGrid)
+├── features/     # Specific business logic and user actions (e.g., CreateEvent)
+├── entities/     # Buisness entities (e.g., Event type, User type, shared store slices)
+└── shared/       # Reusable UI components, utilities, and API configuration
 ```
+</details>
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## �️ Scripts Overview
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- `npm run dev`: Starts the Vite development server with Hot Module Replacement (HMR).
+- `npm run build`: Compiles TypeScript and creates an optimized production build in the `dist` directory.
+- `npm run preview`: Locally previews the production build.
+- `npm run lint`: Runs ESLint to identify and fix code style issues.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🤝 Contributing
+
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
