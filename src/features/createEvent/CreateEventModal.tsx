@@ -6,7 +6,7 @@ import { CalendarSelect } from './CalendarSelect/CalendaarSelect';
 import { useEventStore } from '../../entities/event/model/eventStore';
 import { useCalendarStore } from '../../entities/calendar/model/calendarStore';
 import { timeToMinutes } from '../../shared/lib/time';
-import type { CalendarCategory } from '../../entities/calendar/model/calendarStore';
+import type { CalendarCategory } from '../../entities/event/model/types';
 
 import imgTitle from '../../assets/title.png';
 import imgDate from '../../assets/Date.png';
