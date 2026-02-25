@@ -13,6 +13,7 @@ interface CalendarState {
     deleteCalendar: (id: string) => void;
     updateCalendar: (id: string, title: string, color: string) => void;
 }
+
 export const useCalendarStore = create<CalendarState>()(
     persist(
         (set) => ({

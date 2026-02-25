@@ -19,6 +19,21 @@ export type CalendarEvent = {
     createdAt: Date;
 }
 
+export type CreateEventResult =
+    | { ok: true }
+    | { ok: false; error: string };
+
+export interface EventState {
+    events: CalendarEvent[];
+    selectedEvent: CalendarEvent | null;
+    setSelectedEvent: (event: CalendarEvent | null) => void;
+    clearSelectedEvent: () => void;
+    createEvent: (event: Omit<CalendarEvent, 'id' | 'createdAt'>) => CreateEventResult;
+    updateEvent: (id: string, event: Omit<CalendarEvent, 'id' | 'createdAt'>) => CreateEventResult;
+    deleteEvent: (id: string) => void;
+    deleteEventsByCalendarId: (calendarId: string) => void;
+}
+
 export interface CalendarCategory {
     id: string;
     title: string;
